@@ -17,7 +17,7 @@ func RutasPropietarios(r *mux.Router) {
 
 	s.Handle("/list", middleware.Autentication(http.HandlerFunc(getAllPropietarios))).Methods("GET")
 	s.Handle("/create", middleware.Autentication(http.HandlerFunc(insertPropietarios))).Methods("POST")
-	s.Handle("/info-prop/{numero_documento}", middleware.Autentication(http.HandlerFunc(getOnePropietario))).Methods("GET")
+	s.Handle("/info-prop/{numero_documento}", middleware.Autentication(http.HandlerFunc(getOnePropietarioByDocument))).Methods("GET")
 	s.Handle("/update/{numero_documento}", middleware.Autentication(http.HandlerFunc(updatePropietario))).Methods("PUT")
 }
 
@@ -26,9 +26,8 @@ func getAllPropietarios(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content Type", "Aplication-Json")
 	response := controller.NewResponseManager()
 
-	//get allData from database
-	dataPropietarios, _ := new(go_basic_orm.Querys).NewQuerys("propietarios").Select().Exec(go_basic_orm.Config_Query{Cloud: true}).All()
-	response.Data["propietarios"] = dataPropietarios
+	data_propietarios, _ := new(go_basic_orm.Querys).NewQuerys("propietarios").Select().Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	response.Data["propietarios"] = data_propietarios
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
@@ -63,7 +62,7 @@ func insertPropietarios(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func getOnePropietario(w http.ResponseWriter, r *http.Request) {
+func getOnePropietarioByDocument(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content Type", "Aplication-Json")
 	response := controller.NewResponseManager()
@@ -71,25 +70,23 @@ func getOnePropietario(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	numero_documento := params["numero_documento"]
 	if numero_documento == "" {
-		response.Msg = "Documento no encintrado"
-		response.StatusCode = 400
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(response)
+		controller.ErrorsError(w, errors.New("documento no encontrado"))
 		return
 	}
 
-	dataPropietarios, _ := new(go_basic_orm.Querys).NewQuerys("propietarios").Select().Where("numero_documento", "=", numero_documento).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
+	data_propietario, _ := new(go_basic_orm.Querys).NewQuerys("propietarios").Select().Where("numero_documento", "=", numero_documento).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
 
-	if len(dataPropietarios) <= 0 {
+	if len(data_propietario) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))
 		return
 	}
 
-	response.Data["info"] = dataPropietarios
+	response.Data["propietario-info"] = data_propietario
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
+
 func updatePropietario(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()

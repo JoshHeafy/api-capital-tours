@@ -4,9 +4,11 @@ import (
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
 	"api-capital-tours/src/libraries/date"
+	"api-capital-tours/src/libraries/library"
 	"api-capital-tours/src/middleware"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -22,6 +24,7 @@ func RutasInscripciones(r *mux.Router) {
 	s.Handle("/create-ins", middleware.Autentication(http.HandlerFunc(insertInscripciones))).Methods("POST")
 	s.Handle("/service-alta/{numero_placa}", middleware.Autentication(http.HandlerFunc(darAlta))).Methods("PUT")
 	s.Handle("/service-baja/{numero_placa}", middleware.Autentication(http.HandlerFunc(darBaja))).Methods("PUT")
+	s.HandleFunc("/periodo/{numero_documento}", consultaPeriodo).Methods("GET")
 }
 
 func getInscripciones(w http.ResponseWriter, r *http.Request) {
@@ -184,6 +187,66 @@ func getOneInscripcion(w http.ResponseWriter, r *http.Request) {
 
 	response.Data["inscripciones-info"] = data_inscripciones
 
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func consultaPeriodo(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	response := controller.NewResponseManager()
+
+	params := mux.Vars(r)
+	numero_documento := params["numero_documento"]
+
+	if numero_documento == "" {
+		controller.ErrorsError(w, errors.New("no se encontró el documento del cliente"))
+		return
+	}
+
+	data_inscripciones, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select("years || '-' || months as periodo").Where("numero_documento", "=", numero_documento).Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+
+	var newdataDetalleInscripcion []string
+	for _, v := range data_inscripciones {
+		if v["periodo"] != nil {
+			newdataDetalleInscripcion = append(newdataDetalleInscripcion, v["periodo"].(string))
+		}
+	}
+
+	dataDetalleInscripcion, _ := new(go_basic_orm.Querys).NewQuerys("detalle_inscripciones").Select("fecha_pago", "importe").Where("numero_documento", "=", numero_documento).And("estado", "=", 0).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
+
+	datePago := date.GetDate(dataDetalleInscripcion["fecha_pago"].(string))
+
+	dateNow := date.GetDateLocation()
+	monthInit := int64(datePago.Month())
+	yearInit := datePago.Year()
+	monthNow := int64(dateNow.Month())
+	yearNow := dateNow.Year()
+
+	var dataPagos []map[string]interface{}
+	var month = int64(12)
+
+	importe := dataDetalleInscripcion["importe"]
+
+	for i := yearInit; i <= yearNow; i++ {
+		if i == yearNow {
+			month = monthNow
+		}
+		for e := monthInit; e <= month; e++ {
+			year := fmt.Sprintf("%v", i)
+			month := fmt.Sprintf("%02d", e)
+			if library.IndexOf_String(newdataDetalleInscripcion, year+"-"+month) == -1 {
+				dataPagos = append(dataPagos, map[string]interface{}{
+					"years":   year,
+					"months":  month,
+					"importe": importe,
+				})
+			}
+		}
+
+		monthInit = 1
+	}
+
+	response.Data["periodo-inscripcion"] = dataPagos
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }

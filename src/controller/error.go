@@ -23,6 +23,24 @@ func ErrorServer(w http.ResponseWriter, err error) {
 	json.NewEncoder(w).Encode(response)
 }
 
+func ErrorConflict(w http.ResponseWriter, err error) {
+	response := NewResponseManager()
+	response.Msg = err.Error()
+	response.Status = "Conflict"
+	response.StatusCode = 409
+	w.WriteHeader(http.StatusConflict)
+	json.NewEncoder(w).Encode(response)
+}
+
+func ErrorUnauthorized(w http.ResponseWriter, err error) {
+	response := NewResponseManager()
+	response.Msg = err.Error()
+	response.Status = "Unauthorized"
+	response.StatusCode = 401
+	w.WriteHeader(http.StatusUnauthorized)
+	json.NewEncoder(w).Encode(response)
+}
+
 func ErrorsError(w http.ResponseWriter, err error) {
 	response := NewResponseManager()
 	response.Msg = err.Error()

@@ -13,7 +13,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func main() {
+func Main() {
 	basePath := "./tmp/"
 	table := "versiones"
 	resultTables := consultar("SELECT table_name FROM Information_Schema.TABLES WHERE table_name='" + table + "'")

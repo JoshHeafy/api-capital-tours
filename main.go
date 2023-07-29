@@ -19,7 +19,6 @@ func main() {
 	routes.RutasAuth(r)
 	routes.RutasSolicitudes(r)
 	routes.RutasPropietarios(r)
-	routes.RutasConsultas(r)
 	routes.RutasVehiculos(r)
 	routes.RutasInscripciones(r)
 	routes.RutasComprobantes(r)

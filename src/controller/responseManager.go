@@ -10,9 +10,9 @@ type ResponseManager struct {
 
 func NewResponseManager() *ResponseManager {
 	return &ResponseManager{
-		Msg:        "Succes",
+		Msg:        "Success",
 		StatusCode: 200,
-		Status:     "Succes",
+		Status:     "Success",
 		Data:       make(map[string]interface{}),
 	}
 }

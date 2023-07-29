@@ -5,6 +5,7 @@ import (
 	"api-capital-tours/src/database/models/tables"
 	"api-capital-tours/src/middleware"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/deybin/go_basic_orm"
@@ -21,9 +22,14 @@ func getSolicitudes(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content Type", "Aplication-Json")
 	response := controller.NewResponseManager()
 
-	//get allData from database
-	dataSolicitudes, _ := new(go_basic_orm.Querys).NewQuerys("solicitudes").Select().Exec(go_basic_orm.Config_Query{Cloud: true}).All()
-	response.Data["solicitudes"] = dataSolicitudes
+	data_solicitudes, err := new(go_basic_orm.Querys).NewQuerys("solicitudes").Select().Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+
+	if err != nil {
+		controller.ErrorsWaning(w, errors.New("error al obtener solicitudes"))
+		return
+	}
+
+	response.Data["solicitudes"] = data_solicitudes
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
@@ -47,7 +53,7 @@ func insertSolicitud(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = solicitudes.Exec("capitaltours")
+	err = solicitudes.Exec("capital_tours")
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return

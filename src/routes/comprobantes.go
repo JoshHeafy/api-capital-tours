@@ -20,9 +20,9 @@ func RutasComprobantes(r *mux.Router) {
 	s := r.PathPrefix("/comprobantes").Subrouter()
 
 	s.Handle("/info/{numero_documento}", middleware.Autentication(http.HandlerFunc(getOneComprobante))).Methods("GET")
-	s.Handle("/info-cd/{id_comprobante_pago}", middleware.Autentication(http.HandlerFunc(getOneComprobanteDetail))).Methods("GET")
+	s.Handle("/info-detail/{id_comprobante_pago}", middleware.Autentication(http.HandlerFunc(getOneComprobanteDetail))).Methods("GET")
 	s.Handle("/create/{id_inscripcion}", middleware.Autentication(http.HandlerFunc(insertComprobante))).Methods("POST")
-	s.Handle("/create-cd", middleware.Autentication(http.HandlerFunc(insertDetailComprobante))).Methods("POST")
+	s.Handle("/create-detail", middleware.Autentication(http.HandlerFunc(insertDetailComprobante))).Methods("POST")
 }
 
 func insertComprobante(w http.ResponseWriter, r *http.Request) {

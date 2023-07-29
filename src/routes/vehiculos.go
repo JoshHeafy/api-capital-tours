@@ -3,6 +3,7 @@ package routes
 import (
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
+	"api-capital-tours/src/middleware"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -14,21 +15,26 @@ import (
 func RutasVehiculos(r *mux.Router) {
 	s := r.PathPrefix("/vehiculos").Subrouter()
 
-	s.HandleFunc("/list", getVehiculos).Methods("GET")
-	s.HandleFunc("/info/{numero_documento}", getClientCar).Methods("GET")
-	s.HandleFunc("/create", insertVehiculos).Methods("POST")
-	s.HandleFunc("/update/{numero_placa}", updateVehiculo).Methods("PUT")
+	s.Handle("/list", middleware.Autentication(http.HandlerFunc(getVehiculos))).Methods("GET")
+	s.Handle("/info/{numero_documento}", middleware.Autentication(http.HandlerFunc(getClientCar))).Methods("GET")
+	s.Handle("/create", middleware.Autentication(http.HandlerFunc(insertVehiculos))).Methods("POST")
+	s.Handle("/update/{numero_placa}", middleware.Autentication(http.HandlerFunc(updateVehiculo))).Methods("PUT")
 
 }
 
 func getVehiculos(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Set("Content Type", "Aplication-Json")
+	w.Header().Set("Content Type", "application/json")
 	response := controller.NewResponseManager()
 
-	//get allData from database
-	dataVehiculos, _ := new(go_basic_orm.Querys).NewQuerys("vehiculos").Select().Exec(go_basic_orm.Config_Query{Cloud: true}).All()
-	response.Data["vehiculos"] = dataVehiculos
+	data_vehiculos, err := new(go_basic_orm.Querys).NewQuerys("vehiculos").Select().Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+
+	if err != nil {
+		controller.ErrorsWaning(w, errors.New("error al obtener vehículos"))
+		return
+	}
+
+	response.Data["vehiculos"] = data_vehiculos
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
@@ -64,29 +70,24 @@ func insertVehiculos(w http.ResponseWriter, r *http.Request) {
 }
 
 func getClientCar(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content Type", "Aplication-Json")
+	w.Header().Set("Content Type", "application/json")
 	response := controller.NewResponseManager()
 
 	params := mux.Vars(r)
 	numero_documento := params["numero_documento"]
 	if numero_documento == "" {
-		response.Msg = "Documento no encintrado"
-		response.StatusCode = 400
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(response)
+		controller.ErrorsError(w, errors.New("documento no encontrado"))
 		return
 	}
 
-	//get allData from database
-	dataCientCar, _ := new(go_basic_orm.Querys).NewQuerys("vehiculos").Select().Where("numero_documento", "=", numero_documento).Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	data_client_car, _ := new(go_basic_orm.Querys).NewQuerys("vehiculos").Select().Where("numero_documento", "=", numero_documento).Exec(go_basic_orm.Config_Query{Cloud: true}).All()
 
-	if len(dataCientCar) <= 0 {
+	if len(data_client_car) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))
 		return
 	}
 
-	response.Data["vehiculos-info"] = dataCientCar
-	// response.Data["cookie_token"] = sessionID
+	response.Data["vehiculos-info"] = data_client_car
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)

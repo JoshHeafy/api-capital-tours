@@ -5,6 +5,7 @@ import (
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -19,32 +20,19 @@ import (
 
 func RutasAuth(r *mux.Router) {
 	s := r.PathPrefix("/auth").Subrouter()
-	s.HandleFunc("/", authentication).Methods("GET")
 	s.HandleFunc("/verify", verifyLogin).Methods("GET")
 	s.HandleFunc("/login", login).Methods("PUT")
 	s.HandleFunc("/first-step", register).Methods("POST")
 }
 
-func authentication(w http.ResponseWriter, r *http.Request) {
-
-	w.Header().Set("Content-Type", "application/json")
-	response := controller.NewResponseManager()
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
-}
-
 func verifyLogin(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 	token := r.Header.Get("Access-Token")
 	_, err := auth.ValidateToken(token)
 
 	if token == "" || err != nil {
-		response.Msg = "Inicio de Sesión Inválido"
-		response.Status = "error"
-		response.StatusCode = 401
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(response)
+		controller.ErrorUnauthorized(w, errors.New("inicio de sesión inválido"))
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -63,21 +51,13 @@ func login(w http.ResponseWriter, r *http.Request) {
 	dataUser, _ := new(go_basic_orm.Querys).NewQuerys("users").Select().Where("email", "=", req_body["email"]).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
 
 	if len(dataUser) <= 0 {
-		response.Msg = "Usuario y/o Contraseña Incorrecto"
-		response.StatusCode = 300
-		response.Status = "Usuario y/o Contraseña Incorrecto"
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(response)
+		controller.ErrorsWaning(w, errors.New("usuario y/o contraseña incorrecto"))
 		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(dataUser["password"].(string)), []byte(req_body["password"].(string)))
 	if err != nil {
-		response.Msg = "Usuario y/o Contraseña Incorrecto"
-		response.StatusCode = 300
-		response.Status = "Error"
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(response)
+		controller.ErrorsWaning(w, errors.New("usuario y/o contraseña incorrecto"))
 		return
 	}
 
@@ -110,11 +90,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 	dataUser, err := new(go_basic_orm.Querys).NewQuerys("users").Select("email").Where("email", "=", data_request["email"]).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
 
 	if dataUser != nil || err != nil {
-		response.Msg = "Usuario ya registrado"
-		response.Status = "error"
-		response.StatusCode = 409
-		w.WriteHeader(http.StatusConflict)
-		json.NewEncoder(w).Encode(response)
+		controller.ErrorConflict(w, errors.New("usuario ya registrado"))
 		return
 	}
 
