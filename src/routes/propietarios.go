@@ -22,12 +22,15 @@ func RutasPropietarios(r *mux.Router) {
 }
 
 func getAllPropietarios(w http.ResponseWriter, r *http.Request) {
-
-	w.Header().Set("Content Type", "Aplication-Json")
+	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
-	data_propietarios, _ := new(go_basic_orm.Querys).NewQuerys("propietarios").Select().Exec(go_basic_orm.Config_Query{Cloud: true}).All()
-	response.Data["propietarios"] = data_propietarios
+	_data_propietarios, err := new(go_basic_orm.Querys).NewQuerys("propietarios").Select().Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	if err != nil {
+		controller.ErrorsWaning(w, errors.New("no se encontro propietarios"))
+	}
+
+	response.Data["propietarios"] = _data_propietarios
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
@@ -63,25 +66,20 @@ func insertPropietarios(w http.ResponseWriter, r *http.Request) {
 }
 
 func getOnePropietarioByDocument(w http.ResponseWriter, r *http.Request) {
-
-	w.Header().Set("Content Type", "Aplication-Json")
+	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
 	params := mux.Vars(r)
 	numero_documento := params["numero_documento"]
-	if numero_documento == "" {
-		controller.ErrorsError(w, errors.New("documento no encontrado"))
-		return
-	}
 
-	data_propietario, _ := new(go_basic_orm.Querys).NewQuerys("propietarios").Select().Where("numero_documento", "=", numero_documento).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
+	_data_propietario, _ := new(go_basic_orm.Querys).NewQuerys("propietarios").Select().Where("numero_documento", "=", numero_documento).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
 
-	if len(data_propietario) <= 0 {
+	if len(_data_propietario) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))
 		return
 	}
 
-	response.Data["propietario-info"] = data_propietario
+	response.Data["propietario-info"] = _data_propietario
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
@@ -94,10 +92,6 @@ func updatePropietario(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	numero_documento := params["numero_documento"]
 
-	if numero_documento == "" {
-		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))
-		return
-	}
 	data_request, err := controller.CheckBody(w, r)
 	if err != nil {
 		return

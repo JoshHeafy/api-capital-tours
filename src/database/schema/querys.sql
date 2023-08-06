@@ -3,12 +3,12 @@ CREATE DATABASE capital_tours;
 CREATE TABLE
     propietarios (
         numero_documento VARCHAR(11) NOT NULL PRIMARY KEY,
-        nombre_propietario VARCHAR(100) NOT NULL,
+        nombre_propietario VARCHAR(200) NOT NULL,
         direccion VARCHAR(150),
         referencia VARCHAR(150),
         tipo_documento int NOT NULL,
-        telefono VARCHAR(20),
-        email VARCHAR(50)
+        telefono VARCHAR(9),
+        email VARCHAR(150)
     );
 
 CREATE TABLE
@@ -19,8 +19,8 @@ CREATE TABLE
         anio INT NOT NULL,
         color VARCHAR(7) NOT NULL,
         numero_serie VARCHAR(20) NOT NULL,
-        numero_pasajeros INT NOT NULL DEFAULT 4,
-        numero_asientos INT NOT NULL DEFAULT 5,
+        numero_pasajeros INT NOT NULL, --default 4
+        numero_asientos INT NOT NULL, --default 5
         observaciones VARCHAR(100),
         numero_documento VARCHAR(11) NOT NULL,
         CONSTRAINT fk_vehiculos_propietarios FOREIGN KEY (numero_documento) REFERENCES propietarios (numero_documento)
@@ -35,12 +35,11 @@ CREATE TABLE
         fecha_pago VARCHAR(10) NOT NULL,
         years int NOT NULL,
         months int NOT NULL,
-        estado INT NOT NULL default 0,
-        fecha_fin VARCHAR(10) DEFAULT NULL,
+        estado INT NOT NULL default 0, -- 0: inactivo, 1: activo
+        fecha_fin VARCHAR(10) DEFAULT NULL, -- si deja de ser null entonces la inscripcion habra terminado
         numero_flota INT NOT NULL,
         numero_placa VARCHAR(7) NOT NULL,
         CONSTRAINT fk_inscripciones_vehiculos FOREIGN KEY (numero_placa) REFERENCES vehiculos (numero_placa),
-        CONSTRAINT fk_inscripciones_propietarios FOREIGN KEY (numero_documento) REFERENCES propietarios (numero_documento)
     );
 
 CREATE TABLE
@@ -48,10 +47,10 @@ CREATE TABLE
         id_detalle_inscripcion VARCHAR(36) NOT NULL PRIMARY KEY,
         fecha_pago VARCHAR(10) NOT NULL,
         years int NOT NULL,
-        months int NOT NULL, --//entre 1 y 12
+        months int NOT NULL,
         importe FLOAT8 NOT NULL DEFAULT 0.0,
-        numero_documento VARCHAR(12) NOT NULL,
-        estado INT DEFAULT 0,
+        numero_documento VARCHAR(11) NOT NULL,
+        estado INT DEFAULT 0, -- 0: inactivo, 1: activo
         id_inscripcion varchar(36) not null,
         CONSTRAINT fk_detalle_inscripciones_inscripciones FOREIGN KEY (id_inscripcion) REFERENCES inscripciones (id_inscripcion)
     );
@@ -68,19 +67,19 @@ CREATE TABLE
         igv FLOAT8 NOT NULL DEFAULT 0.0,
         descuento FLOAT8 NOT NULL DEFAULT 0.0,
         total FLOAT8 NOT NULL DEFAULT 0.0,
-        observaciones VARCHAR(100) NOT NULL DEFAULT '',
-        estado INT DEFAULT 0,
+        observaciones VARCHAR(150) NOT NULL DEFAULT '',
+        estado INT DEFAULT 0, -- 0: inactivo, 1: activo
         id_inscripcion VARCHAR(36) NOT NULL,
         CONSTRAINT fk_comprobante_pago_inscripciones FOREIGN KEY (id_inscripcion) REFERENCES inscripciones (id_inscripcion)
     );
 
 CREATE TABLE
     detalle_comprobantes (
-        id_comprobante_pago VARCHAR(36) NOT NULL,
-        item int not null,
+        id_comprobante_pago VARCHAR(36) NOT NULL, -- directamente amarrado a comprobante
+        item serial not null, -- para borrar el registro
         importe FLOAT8 NOT NULL DEFAULT 0.0,
-        descuento FLOAT8 NOT NULL DEFAULT 0.0,
         igv FLOAT8 NOT NULL DEFAULT 0.0,
+        descuento FLOAT8 NOT NULL DEFAULT 0.0,
         total FLOAT8 NOT NULL DEFAULT 0.0,
         years int NOT NULL,
         months int NOT NULL,
@@ -100,25 +99,36 @@ CREATE TABLE
 CREATE TABLE
     solicitudes (
         id_solicitudes VARCHAR(36) NOT NULL PRIMARY KEY,
-        nombre VARCHAR(100) NOT NULL,
-        email VARCHAR(50) NOT NULL,
-        telefono VARCHAR(15) NOT NULL,
-        asunto VARCHAR(100) NOT NULL,
+        nombre VARCHAR(200) NOT NULL,
+        email VARCHAR(100) NOT NULL,
+        telefono VARCHAR(9) NOT NULL,
+        asunto VARCHAR(150) NOT NULL,
         mensaje VARCHAR(500) NOT NULL
     );
 
 --movil
 CREATE TABLE
-    users (
+    users_mobile (
         id_user VARCHAR(36) NOT NULL PRIMARY KEY,
         cargo INT DEFAULT 0,
-        username VARCHAR(100) NOT NULL,
-        email VARCHAR(100) NOT NULL,
+        email VARCHAR(150) NOT NULL,
         password VARCHAR(200) NOT NULL,
-        numero_placa VARCHAR(36) NOT NULL,
+        numero_placa VARCHAR(7) NOT NULL,
         CONSTRAINT fk_users_vehiculos FOREIGN KEY (numero_placa) REFERENCES vehiculos (numero_placa),
-        CONSTRAINT unique_email UNIQUE (email),
-        CONSTRAINT unique_username UNIQUE (username)
+        CONSTRAINT unique_email UNIQUE (email)
+    );
+
+CREATE TABLE
+    users_admin (
+        id_user_admin VARCHAR(36) NOT NULL PRIMARY KEY,
+        cargo INT DEFAULT 0,
+        username VARCHAR(100) NOT NULL,
+        nombre VARCHAR(100) NOT NULL,
+        apellidos VARCHAR(100) NOT NULL,
+        id_img VARCHAR,
+        email VARCHAR(150) NOT NULL,
+        password VARCHAR(200) NOT NULL,
+        CONSTRAINT unique_username_admin UNIQUE (username)
     );
 
 ------------------------------------------------------------------------
@@ -137,29 +147,29 @@ VALUES
     (
         '87654321',
         'alex smith',
-        'Dirección 2',
-        'Referencia 2',
-        2,
+        'Dirección 1',
+        'Referencia 1',
+        1,
         '987654321',
         'propietario2@example.com'
     ),
     (
         '98765432',
         'marlon wayan',
-        'Dirección 3',
-        'Referencia 3',
+        'Dirección 2',
+        'Referencia 2',
         1,
         '654321987',
         'propietario3@example.com'
     ),
     (
-        '00000000',
-        'supervisor',
-        'supervisor',
-        'ninguna',
-        0,
-        '000000000',
-        'supervisor@capitaltours.com'
+        '12345678',
+        'matt kunshall',
+        'Dirección 3',
+        'Referencia 3',
+        1,
+        '123456789',
+        'propietario1@example.com'
     ),
     (
         '12345678901',
@@ -169,15 +179,6 @@ VALUES
         1,
         '555-1234',
         'john.doe@example.com'
-    ),
-    (
-        '12345678',
-        'matt kunshall',
-        'Dirección 1',
-        'Referencia 1',
-        1,
-        '123456789',
-        'propietario1@example.com'
     ),
     (
         '78978987878',
@@ -204,18 +205,6 @@ INSERT INTO
         numero_documento
     )
 VALUES
-    (
-        '000-000',
-        'supervisor',
-        'supervisor',
-        2023,
-        '#ffffff',
-        '000000',
-        4,
-        5,
-        'ninguna',
-        '00000000'
-    ),
     (
         '987-OYP',
         'Marca 1',
@@ -318,147 +307,17 @@ INSERT INTO
     )
 VALUES
     (
-        '24bd7d9b-c055-4d8d-b2c7-14c64299f5a6',
-        '98765432',
-        '13/07/2023',
-        150,
-        '13/08/2023',
-        2023,
-        1,
-        1,
-        NULL,
-        18,
-        '789-FGH'
-    ),
-    (
-        '6f41e24a-20e1-4685-b57b-c1739a93a5a5',
-        '12345678901',
-        '13/07/2023',
-        150,
-        '13/08/2023',
-        2023,
-        1,
-        1,
-        NULL,
-        37,
-        'ABC123'
-    ),
-    (
-        'cd06782e-a884-40f7-bf06-43dd57a79c85',
-        '12345678',
-        '01/01/2023',
-        100,
-        '05/01/2023',
-        1,
-        6,
-        0,
-        '31/12/2023',
-        1,
-        '987-OYP'
-    ),
-    (
-        '3b9cdc6e-6f67-4345-9134-d0e39aaf279d',
+        'c0a7b6b4-cb52-4338-b2c9-344ee783ee3a',
         '87654321',
-        '01/01/2023',
-        200,
-        '05/01/2023',
+        '01/08/2023',
+        100,
+        '01/09/2023',
+        2023,
+        8,
         1,
-        6,
-        0,
-        '31/12/2023',
-        3,
+        NULL,
+        36,
         '321-KJH'
-    ),
-    (
-        '30e65b6e-4899-4ef9-9034-0aaac13a3f51',
-        '12345678',
-        '13/07/2023',
-        100,
-        '13/08/2023',
-        2023,
-        7,
-        0,
-        NULL,
-        36,
-        '654-RFD'
-    ),
-    (
-        '500429cd-e258-43c2-b1c2-7e225e80df1b',
-        '12345678',
-        '01/01/2023',
-        150,
-        '05/01/2023',
-        1,
-        12,
-        0,
-        '31/12/2023',
-        2,
-        '654-RFD'
-    ),
-    (
-        '1',
-        '12345678901',
-        '01/01/2023',
-        100,
-        '01/01/2023',
-        1,
-        6,
-        1,
-        '30/06/2023',
-        10,
-        'ABC123'
-    ),
-    (
-        '2',
-        '12345678901',
-        '01/01/2023',
-        100,
-        '01/02/2023',
-        2023,
-        6,
-        1,
-        NULL,
-        25,
-        'ABC123'
-    ),
-    (
-        '13dbb498-9414-415a-942b-e0804c06b4ce',
-        '98765432',
-        '01/01/2023',
-        250,
-        '05/01/2023',
-        1,
-        12,
-        1,
-        '31/12/2023',
-        4,
-        '789-FGH'
-    ),
-    (
-        'f54e779b-a8ee-4527-bc55-b93b57f361a3',
-        '12345678901',
-        '01/01/2023',
-        100,
-        '01/02/2023',
-        2023,
-        6,
-        1,
-        NULL,
-        25,
-        'ABC123'
-    ),
-    (
-        '22c00ad3-1652-4ac9-bc6f-3ec59bc0a6d5',
-        '12345678',
-        '13/07/2023',
-        100,
-        '13/08/2023',
-        2023,
-        7,
-        1,
-        NULL,
-        36,
-        '654-RFD'
     );
 
 -- Insertar detalle_inscripciones
@@ -475,57 +334,17 @@ INSERT INTO
     )
 VALUES
     (
-        '1',
-        '01/01/2023',
-        1,
-        6,
+        '616ac05b-be52-4ab8-8d02-fa28e4d4b70a',
+        '01/09/2023',
+        2023,
+        8,
         100,
-        '12345678901',
-        0,
-        '1'
-    ),
-    (
-        '9f4baa31-826c-4330-81a9-81966a89769d',
-        '05/01/2023',
-        1,
-        6,
-        100,
-        '12345678',
-        1,
-        'cd06782e-a884-40f7-bf06-43dd57a79c85'
-    ),
-    (
-        '04c4fb71-35a7-45f8-9bfc-d2c4aab22d0e',
-        '05/01/2023',
-        1,
-        12,
-        150,
-        '12345678',
-        1,
-        '500429cd-e258-43c2-b1c2-7e225e80df1b'
-    ),
-    (
-        '2e800179-55b9-4819-81da-4ce46b6f429c',
-        '05/01/2023',
-        1,
-        6,
-        200,
         '87654321',
         1,
-        '3b9cdc6e-6f67-4345-9134-d0e39aaf279d'
-    ),
-    (
-        '2433d8b7-f4aa-47f7-9fd9-b7687dfe9c5a',
-        '05/01/2023',
-        1,
-        12,
-        250,
-        '98765432',
-        1,
-        '13dbb498-9414-415a-942b-e0804c06b4ce'
+        'c0a7b6b4-cb52-4338-b2c9-344ee783ee3a'
     );
 
--- Insertar comprobante_pago
+-- Insertar comprobantes
 INSERT INTO
     comprobante_pago (
         id_comprobante_pago,
@@ -542,96 +361,21 @@ INSERT INTO
         estado,
         id_inscripcion
     )
-values
+VALUES
     (
-        '373cb35e-fcb7-42c0-baac-52c9e0db6f20',
-        '12345678',
-        '01',
-        '1234',
-        '00001',
-        '05/01/2023',
-        100,
-        18,
-        0,
-        118,
-        'Observaciones 1',
-        1,
-        'cd06782e-a884-40f7-bf06-43dd57a79c85'
-    ),
-    (
-        '48ea0c15-50a4-40be-8bc2-374fd974ccdc',
-        '12345678',
-        '01',
-        '1234',
-        '00002',
-        '05/01/2023',
-        150,
-        27,
-        0,
-        177,
-        'Observaciones 2',
-        1,
-        '500429cd-e258-43c2-b1c2-7e225e80df1b'
-    ),
-    (
-        'c9726412-6051-4920-996d-0451758132ea',
+        '415bc8fb-b811-45d4-944d-2b84be0c49c3',
         '87654321',
         '01',
-        '1234',
-        '00003',
-        '05/01/2023',
-        200,
-        36,
-        0,
-        236,
-        'Observaciones 3',
-        1,
-        '3b9cdc6e-6f67-4345-9134-d0e39aaf279d'
-    ),
-    (
-        '63d64890-e643-43d0-97fd-a68d159fd596',
-        '98765432',
-        '01',
-        '1234',
-        '00004',
-        '05/01/2023',
-        250,
-        45,
-        0,
-        295,
-        'Observaciones 4',
-        1,
-        '13dbb498-9414-415a-942b-e0804c06b4ce'
-    ),
-    (
-        'a44599e8-302d-4e11-bf2a-8cfe9e8a3b92',
-        '98765432',
-        '01',
         '0001',
-        '00001',
-        '13/08/2023',
+        '0000000001',
+        '02/08/2023',
         150,
-        1,
+        0.18,
         0,
-        151,
-        '',
+        177,
+        'ninguna',
         1,
-        '24bd7d9b-c055-4d8d-b2c7-14c64299f5a6'
-    ),
-    (
-        '20adc410-35d7-41f8-b4cc-44c3c6a553b2',
-        '12345678901',
-        '01',
-        '005',
-        '00002',
-        '13/08/2023',
-        150,
-        2,
-        0,
-        150,
-        '',
-        1,
-        '6f41e24a-20e1-4685-b57b-c1739a93a5a5'
+        'c0a7b6b4-cb52-4338-b2c9-344ee783ee3a'
     );
 
 -- Insertar detalle_comprobantes
@@ -640,86 +384,46 @@ INSERT INTO
         id_comprobante_pago,
         item,
         importe,
-        descuento,
         igv,
+        descuento,
         total,
         years,
         months
     )
 VALUES
     (
-        '373cb35e-fcb7-42c0-baac-52c9e0db6f20',
-        1,
-        100,
-        0,
-        18,
-        118,
-        1,
-        6
-    ),
-    (
-        '48ea0c15-50a4-40be-8bc2-374fd974ccdc',
-        1,
+        '415bc8fb-b811-45d4-944d-2b84be0c49c3',
+        3,
         150,
+        0.18,
         0,
-        27,
         177,
-        1,
-        12
-    ),
-    (
-        'c9726412-6051-4920-996d-0451758132ea',
-        1,
-        200,
-        0,
-        36,
-        236,
-        1,
-        6
-    ),
-    (
-        '63d64890-e643-43d0-97fd-a68d159fd596',
-        1,
-        250,
-        0,
-        45,
-        295,
-        1,
-        12
+        2023,
+        8
     );
 
--- Insertar permisos
+-- Insertar user_admin
 INSERT INTO
-    permisos (
-        id_permiso,
-        fecha_inicio,
-        fecha_fin,
-        id_inscripcion
+    users_admin (
+        id_user_admin,
+        cargo,
+        username,
+        nombre,
+        apellidos,
+        id_img,
+        email,
+        password
     )
 VALUES
     (
-        '8aaf0ca4-f473-481f-8418-560bc1949852',
-        '01/01/2023',
-        '31/12/2023',
-        'cd06782e-a884-40f7-bf06-43dd57a79c85'
-    ),
-    (
-        'dc2844dd-9014-4d85-9326-4044872b09aa',
-        '01/01/2023',
-        '31/12/2023',
-        '500429cd-e258-43c2-b1c2-7e225e80df1b'
-    ),
-    (
-        '4dbb7eb7-c3bf-491f-b963-a243d0b6093f',
-        '01/01/2023',
-        '31/12/2023',
-        '3b9cdc6e-6f67-4345-9134-d0e39aaf279d'
-    ),
-    (
-        'e4c12eee-afe8-49c4-80e6-fb5d85cc3e58',
-        '01/01/2023',
-        '31/12/2023',
-        '13dbb498-9414-415a-942b-e0804c06b4ce'
+        'bd4b2fd5-e250-4872-9faa-a7c48de0d65f',
+        0,
+        'supervisor',
+        'josh',
+        'cordova canchanya',
+        NULL,
+        'joshar456@gmail.com',
+        '$2a$10$P9CxqO3EgE0ftQL2Hpla7endolsLLVMjuG1MN6sllvwo2Ko2knIbG'
     );
 
 -- Insertar solicitudes
@@ -756,24 +460,4 @@ VALUES
         '654321987',
         'Asunto 3',
         'Mensaje 3'
-    );
-
--- Insertar users
-INSERT INTO
-    users (
-        id_user,
-        cargo,
-        username,
-        email,
-        password,
-        numero_placa
-    )
-VALUES
-    (
-        'f845678a-6c9c-4e77-94a1-03ca19dbdf49',
-        0,
-        'supervisor',
-        'supervisor@capitaltours.com',
-        '$2a$10$X.QKWoH08fwR1k2d0nDSh.hefZ5AbNKSLr4xi2TCp5XO7rBNvojtm',
-        '000-000'
     );

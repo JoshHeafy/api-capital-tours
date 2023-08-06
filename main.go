@@ -16,7 +16,7 @@ func main() {
 	middleware.EnableCORS(r)
 	r.HandleFunc("/", HomeHandler)
 
-	routes.RutasAuth(r)
+	routes.RutasAuthAdmin(r)
 	routes.RutasSolicitudes(r)
 	routes.RutasPropietarios(r)
 	routes.RutasVehiculos(r)

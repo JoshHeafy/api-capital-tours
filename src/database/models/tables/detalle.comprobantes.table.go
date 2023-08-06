@@ -15,24 +15,6 @@ func DetalleComprobantes_GetSchema() ([]go_basic_orm.Model, string) {
 		Type:        "string",
 		Strings:     go_basic_orm.Strings{},
 	})
-	detalleComprobantes = append(detalleComprobantes, go_basic_orm.Model{ //months
-		Name:        "months",
-		Description: "months",
-		Required:    true,
-		Type:        "uint64",
-		Uint: go_basic_orm.Uints{
-			Max: 10,
-		},
-	})
-	detalleComprobantes = append(detalleComprobantes, go_basic_orm.Model{ //item
-		Name:        "item",
-		Description: "item",
-		Required:    true,
-		Type:        "uint64",
-		Uint: go_basic_orm.Uints{
-			Max: 10,
-		},
-	})
 	detalleComprobantes = append(detalleComprobantes, go_basic_orm.Model{ //importe
 		Name:        "importe",
 		Description: "importe",
@@ -67,7 +49,16 @@ func DetalleComprobantes_GetSchema() ([]go_basic_orm.Model, string) {
 		Required:    true,
 		Type:        "uint64",
 		Uint: go_basic_orm.Uints{
-			Max: 10,
+			Max: 3000,
+		},
+	})
+	detalleComprobantes = append(detalleComprobantes, go_basic_orm.Model{ //months
+		Name:        "months",
+		Description: "months",
+		Required:    true,
+		Type:        "uint64",
+		Uint: go_basic_orm.Uints{
+			Max: 12,
 		},
 	})
 	return detalleComprobantes, tableName

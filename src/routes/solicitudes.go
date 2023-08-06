@@ -17,19 +17,20 @@ func RutasSolicitudes(r *mux.Router) {
 	s.HandleFunc("/create", insertSolicitud).Methods("POST")
 	s.Handle("/list", middleware.Autentication(http.HandlerFunc(getSolicitudes))).Methods("GET")
 }
+
 func getSolicitudes(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Set("Content Type", "Aplication-Json")
+	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
-	data_solicitudes, err := new(go_basic_orm.Querys).NewQuerys("solicitudes").Select().Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_solicitudes, err := new(go_basic_orm.Querys).NewQuerys("solicitudes").Select().Exec(go_basic_orm.Config_Query{Cloud: true}).All()
 
 	if err != nil {
 		controller.ErrorsWaning(w, errors.New("error al obtener solicitudes"))
 		return
 	}
 
-	response.Data["solicitudes"] = data_solicitudes
+	response.Data["solicitudes"] = _data_solicitudes
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }

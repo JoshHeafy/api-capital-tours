@@ -83,6 +83,7 @@ func Vehiculos_GetSchema() ([]go_basic_orm.Model, string) {
 		Name:        "numero_documento",
 		Description: "numero_documento",
 		Required:    true,
+		Update:      true,
 		Type:        "string",
 		Strings: go_basic_orm.Strings{
 			Max: 11,

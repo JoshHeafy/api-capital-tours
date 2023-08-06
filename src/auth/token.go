@@ -9,7 +9,10 @@ import (
 )
 
 type JWTClaim struct {
-	Email string `json:"email"`
+	Email     string `json:"email"`
+	Username  string `json:"username"`
+	Nombres   string `json:"nombres"`
+	Apellidos string `json:"apellidos"`
 	jwt.StandardClaims
 }
 

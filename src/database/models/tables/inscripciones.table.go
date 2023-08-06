@@ -93,10 +93,10 @@ func Inscripciones_GetSchema() ([]go_basic_orm.Model, string) {
 		Name:        "fecha_fin",
 		Description: "fecha_fin",
 		Update:      true,
+		Empty:       true,
 		Type:        "string",
 		Strings: go_basic_orm.Strings{
-			Max:  10,
-			Date: true,
+			Max: 10,
 		},
 	})
 	inscripciones = append(inscripciones, go_basic_orm.Model{ //numero_flota
