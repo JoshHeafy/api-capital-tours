@@ -19,13 +19,14 @@ func RutasPropietarios(r *mux.Router) {
 	s.Handle("/create", middleware.Autentication(http.HandlerFunc(insertPropietarios))).Methods("POST")
 	s.Handle("/info-prop/{numero_documento}", middleware.Autentication(http.HandlerFunc(getOnePropietarioByDocument))).Methods("GET")
 	s.Handle("/update/{numero_documento}", middleware.Autentication(http.HandlerFunc(updatePropietario))).Methods("PUT")
+	s.Handle("/filter/{filtro}", middleware.Autentication(http.HandlerFunc(propietariosFilter))).Methods("GET")
 }
 
 func getAllPropietarios(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
-	_data_propietarios, err := new(go_basic_orm.Querys).NewQuerys("propietarios").Select().Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_propietarios, err := new(go_basic_orm.Querys).NewQuerys("propietarios").Select().OrderBy("nombre_propietario").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
 	if err != nil {
 		controller.ErrorsWaning(w, errors.New("no se encontro propietarios"))
 	}
@@ -116,6 +117,20 @@ func updatePropietario(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.Data = propietarios.Data[0]
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func propietariosFilter(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	response := controller.NewResponseManager()
+
+	params := mux.Vars(r)
+	filtro := params["filtro"]
+
+	_data_propietarios, _ := new(go_basic_orm.Querys).NewQuerys("propietarios").Select().Like("numero_documento", "%"+filtro+"%").OrLike("nombre_propietario", "%"+filtro+"%").OrderBy("nombre_propietario").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+
+	response.Data["propietarios"] = _data_propietarios
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }

@@ -14,34 +14,44 @@ func Vehiculos_GetSchema() ([]go_basic_orm.Model, string) {
 		Important:   true,
 		Type:        "string",
 		Strings: go_basic_orm.Strings{
-			Min:       0,
+			Min:       7,
 			Max:       7,
 			UpperCase: true,
 		},
 	})
-	vehiculos = append(vehiculos, go_basic_orm.Model{ //numero_asientos
-		Name:        "numero_asientos",
-		Description: "numero_asientos",
+	vehiculos = append(vehiculos, go_basic_orm.Model{ //marca
+		Name:        "marca",
+		Description: "marca",
 		Required:    true,
-		Type:        "uint64",
-		Uint: go_basic_orm.Uints{
-			Max: 10,
+		Update:      true,
+		Type:        "string",
+		Strings: go_basic_orm.Strings{
+			Min:       3,
+			Max:       15,
+			LowerCase: true,
+		},
+	})
+	vehiculos = append(vehiculos, go_basic_orm.Model{ //modelo
+		Name:        "modelo",
+		Description: "modelo",
+		Required:    true,
+		Update:      true,
+		Type:        "string",
+		Strings: go_basic_orm.Strings{
+			Min:       3,
+			Max:       50,
+			LowerCase: true,
 		},
 	})
 	vehiculos = append(vehiculos, go_basic_orm.Model{ //anio
 		Name:        "anio",
 		Description: "anio",
 		Required:    true,
-		Type:        "uint64",
-		Uint:        go_basic_orm.Uints{},
-	})
-	vehiculos = append(vehiculos, go_basic_orm.Model{ //numero_pasajeros
-		Name:        "numero_pasajeros",
-		Description: "numero_pasajeros",
-		Required:    true,
-		Type:        "uint64",
-		Uint: go_basic_orm.Uints{
-			Max: 10,
+		Update:      true,
+		Type:        "int64",
+		Int: go_basic_orm.Ints{
+			Min: 1800,
+			Max: 3000,
 		},
 	})
 	vehiculos = append(vehiculos, go_basic_orm.Model{ //color
@@ -51,7 +61,6 @@ func Vehiculos_GetSchema() ([]go_basic_orm.Model, string) {
 		Update:      true,
 		Type:        "string",
 		Strings: go_basic_orm.Strings{
-			Min:       0,
 			Max:       7,
 			UpperCase: true,
 		},
@@ -62,19 +71,35 @@ func Vehiculos_GetSchema() ([]go_basic_orm.Model, string) {
 		Required:    true,
 		Type:        "string",
 		Strings: go_basic_orm.Strings{
-			Min:       2,
-			Max:       20,
+			Min:       17,
 			UpperCase: true,
+		},
+	})
+	vehiculos = append(vehiculos, go_basic_orm.Model{ //numero_pasajeros
+		Name:        "numero_pasajeros",
+		Description: "numero_pasajeros",
+		Required:    true,
+		Type:        "int64",
+		Int: go_basic_orm.Ints{
+			Max: 9,
+		},
+	})
+	vehiculos = append(vehiculos, go_basic_orm.Model{ //numero_asientos
+		Name:        "numero_asientos",
+		Description: "numero_asientos",
+		Required:    true,
+		Update:      true,
+		Type:        "int64",
+		Int: go_basic_orm.Ints{
+			Max: 9,
 		},
 	})
 	vehiculos = append(vehiculos, go_basic_orm.Model{ //observaciones
 		Name:        "observaciones",
 		Description: "observaciones",
-		Required:    true,
 		Update:      true,
 		Type:        "string",
 		Strings: go_basic_orm.Strings{
-			Min:       5,
 			Max:       100,
 			LowerCase: true,
 		},
@@ -89,26 +114,6 @@ func Vehiculos_GetSchema() ([]go_basic_orm.Model, string) {
 			Max: 11,
 		},
 	})
-	vehiculos = append(vehiculos, go_basic_orm.Model{ //marca
-		Name:        "marca",
-		Description: "marca",
-		Required:    true,
-		Type:        "string",
-		Strings: go_basic_orm.Strings{
-			Min:       1,
-			Max:       20,
-			LowerCase: true,
-		},
-	})
-	vehiculos = append(vehiculos, go_basic_orm.Model{ //modelo
-		Name:        "modelo",
-		Description: "modelo",
-		Required:    true,
-		Type:        "string",
-		Strings: go_basic_orm.Strings{
-			Max:       20,
-			LowerCase: true,
-		},
-	})
+
 	return vehiculos, tableName
 }

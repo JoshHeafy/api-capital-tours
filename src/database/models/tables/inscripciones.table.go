@@ -45,7 +45,9 @@ func Inscripciones_GetSchema() ([]go_basic_orm.Model, string) {
 		Description: "importe",
 		Update:      true,
 		Type:        "float64",
-		Float:       go_basic_orm.Floats{},
+		Float: go_basic_orm.Floats{
+			Menor: 49,
+		},
 	})
 	inscripciones = append(inscripciones, go_basic_orm.Model{ //fecha_pago
 		Name:        "fecha_pago",
@@ -104,8 +106,10 @@ func Inscripciones_GetSchema() ([]go_basic_orm.Model, string) {
 		Description: "numero_flota",
 		Required:    true,
 		Update:      true,
-		Type:        "uint64",
-		Uint:        go_basic_orm.Uints{},
+		Type:        "int64",
+		Int: go_basic_orm.Ints{
+			Min: 1,
+		},
 	})
 	inscripciones = append(inscripciones, go_basic_orm.Model{ //numero_placa
 		Name:        "numero_placa",

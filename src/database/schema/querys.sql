@@ -4,7 +4,7 @@ CREATE TABLE
     propietarios (
         numero_documento VARCHAR(11) NOT NULL PRIMARY KEY,
         nombre_propietario VARCHAR(200) NOT NULL,
-        direccion VARCHAR(150),
+        direccion VARCHAR(150) NOT NULL,
         referencia VARCHAR(150),
         tipo_documento int NOT NULL,
         telefono VARCHAR(9),
@@ -15,10 +15,10 @@ CREATE TABLE
     vehiculos (
         numero_placa VARCHAR(7) NOT NULL PRIMARY KEY,
         marca VARCHAR(15) NOT NULL,
-        modelo VARCHAR(15) NOT NULL,
+        modelo VARCHAR(50) NOT NULL,
         anio INT NOT NULL,
         color VARCHAR(7) NOT NULL,
-        numero_serie VARCHAR(20) NOT NULL,
+        numero_serie VARCHAR(17) NOT NULL,
         numero_pasajeros INT NOT NULL, --default 4
         numero_asientos INT NOT NULL, --default 5
         observaciones VARCHAR(100),
@@ -40,6 +40,7 @@ CREATE TABLE
         numero_flota INT NOT NULL,
         numero_placa VARCHAR(7) NOT NULL,
         CONSTRAINT fk_inscripciones_vehiculos FOREIGN KEY (numero_placa) REFERENCES vehiculos (numero_placa),
+        CONSTRAINT unique_flota UNIQUE (numero_flota)
     );
 
 CREATE TABLE
@@ -59,7 +60,7 @@ CREATE TABLE
     comprobante_pago (
         id_comprobante_pago VARCHAR(36) NOT NULL PRIMARY KEY,
         numero_documento VARCHAR(11) NOT NULL,
-        tipo varchar(2) NULL DEFAULT 0,
+        tipo varchar(2) NOT NULL,
         numero_serie VARCHAR(4) NOT NULL,
         numero_comprobante VARCHAR(10) NOT NULL,
         fecha_pago VARCHAR(10) NOT NULL,
@@ -68,7 +69,7 @@ CREATE TABLE
         descuento FLOAT8 NOT NULL DEFAULT 0.0,
         total FLOAT8 NOT NULL DEFAULT 0.0,
         observaciones VARCHAR(150) NOT NULL DEFAULT '',
-        estado INT DEFAULT 0, -- 0: inactivo, 1: activo
+        estado INT DEFAULT 1, -- 0: inactivo, 1: activo
         id_inscripcion VARCHAR(36) NOT NULL,
         CONSTRAINT fk_comprobante_pago_inscripciones FOREIGN KEY (id_inscripcion) REFERENCES inscripciones (id_inscripcion)
     );
@@ -98,7 +99,7 @@ CREATE TABLE
 --web
 CREATE TABLE
     solicitudes (
-        id_solicitudes VARCHAR(36) NOT NULL PRIMARY KEY,
+        id_solicitud VARCHAR(36) NOT NULL PRIMARY KEY,
         nombre VARCHAR(200) NOT NULL,
         email VARCHAR(100) NOT NULL,
         telefono VARCHAR(9) NOT NULL,

@@ -20,7 +20,7 @@ func RutasInscripciones(r *mux.Router) {
 	s := r.PathPrefix("/inscripciones").Subrouter()
 
 	s.Handle("/list", middleware.Autentication(http.HandlerFunc(getInscripciones))).Methods("GET")
-	s.Handle("/info/{numero_documento}", middleware.Autentication(http.HandlerFunc(getOneInscripcion))).Methods("GET")
+	s.Handle("/info/{numero_documento}", middleware.Autentication(http.HandlerFunc(getInscripcionByClient))).Methods("GET")
 	s.Handle("/create-ins", middleware.Autentication(http.HandlerFunc(insertInscripciones))).Methods("POST")
 	s.Handle("/service-alta/{numero_placa}", middleware.Autentication(http.HandlerFunc(darAlta))).Methods("PUT")
 	s.Handle("/service-baja/{numero_placa}", middleware.Autentication(http.HandlerFunc(darBaja))).Methods("PUT")
@@ -31,7 +31,7 @@ func getInscripciones(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
-	_data_inscripciones, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select().OrderBy("numero_documento").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_inscripciones, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select().OrderBy("numero_flota").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
 
 	if len(_data_inscripciones) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontro suscripciónes"))
@@ -43,14 +43,14 @@ func getInscripciones(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func getOneInscripcion(w http.ResponseWriter, r *http.Request) {
+func getInscripcionByClient(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
 	params := mux.Vars(r)
 	numero_documento := params["numero_documento"]
 
-	_data_inscripciones, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select().Where("numero_documento", "=", numero_documento).Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_inscripciones, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select().Where("numero_documento", "=", numero_documento).OrderBy("numero_flota").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
 	if len(_data_inscripciones) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))
 		return
@@ -68,6 +68,13 @@ func insertInscripciones(w http.ResponseWriter, r *http.Request) {
 
 	data_request, err := controller.CheckBody(w, r)
 	if err != nil {
+		return
+	}
+
+	_data_inscripcion, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select().Where("numero_placa", "=", data_request["numero_placa"]).Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+
+	if len(_data_inscripcion) >= 1 {
+		controller.ErrorsWaning(w, errors.New("este vehiculo ya tiene una suscripción"))
 		return
 	}
 
@@ -123,10 +130,6 @@ func insertInscripciones(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
-
-// - Opcion1: Agregar el valor de fecha_fin y estado 0 y generar una nueva inscripcion para dar de alta
-// - Opcion2: Validar las fechas de los periodos para asi seleccionar solo los ordenados pero mas actuales
-// - Opcion3: Borrar comprobantes antiguos al dar de alta, reiniciar inscripcion desde la fecha de alta
 
 func darAlta(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -252,21 +255,20 @@ func consultaPeriodo(w http.ResponseWriter, r *http.Request) {
 
 	for i := yearInit; i <= yearNow; i++ {
 		for e := monthInit; e <= month; e++ {
-			var estado uint64 = 0
+			var estado uint64 = 1
 			if e == int64(monthNow) && yearInit == yearNow {
-				estado = 1
+				estado = 0
 			}
 			if e < int64(monthNow) || yearInit < yearNow {
 				estado = 2
 			}
-			year := fmt.Sprintf("%v", i)
-			month := fmt.Sprintf("%d", e)
-			if library.IndexOf_String(newFact, month+"/"+year) == -1 {
+			periodo := fmt.Sprintf("%d/%d", e, i)
+			if library.IndexOf_String(newFact, periodo) == -1 {
 				dataPagos = append(dataPagos, map[string]interface{}{
-					"years":   year,
-					"months":  month,
+					"years":   i,
+					"months":  e,
 					"importe": importe,
-					"estado":  estado, // 0: Ok, 1: Cerca, 2: Mora
+					"estado":  estado, // 0: Cerca, 1: Ok, 2: Mora
 				})
 			}
 		}

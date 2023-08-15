@@ -8,13 +8,13 @@ import (
 func Solicitudes_GetSchema() ([]go_basic_orm.Model, string) {
 	var solicitudes []go_basic_orm.Model
 	tableName := "solicitudes"
-	idsolicitudes := uuid.New().String()
 
-	solicitudes = append(solicitudes, go_basic_orm.Model{ //idsolicitudes
-		Name:        "idsolicitudes",
-		Description: "idsolicitudes",
+	solicitudes = append(solicitudes, go_basic_orm.Model{ //id_solicitudes
+		Name:        "id_solicitudes",
+		Description: "id_solicitudes",
+		Default:     uuid.New().String(),
+		Important:   true,
 		Required:    true,
-		Default:     idsolicitudes,
 		Type:        "string",
 		Strings:     go_basic_orm.Strings{},
 	})
@@ -25,7 +25,7 @@ func Solicitudes_GetSchema() ([]go_basic_orm.Model, string) {
 		Type:        "string",
 		Strings: go_basic_orm.Strings{
 			Min:       10,
-			Max:       100,
+			Max:       200,
 			LowerCase: true,
 		},
 	})
@@ -35,9 +35,8 @@ func Solicitudes_GetSchema() ([]go_basic_orm.Model, string) {
 		Required:    true,
 		Type:        "string",
 		Strings: go_basic_orm.Strings{
-			Min:       12,
-			Max:       50,
-			LowerCase: true,
+			Min: 12,
+			Max: 100,
 		},
 	})
 	solicitudes = append(solicitudes, go_basic_orm.Model{ //telefono
@@ -46,9 +45,8 @@ func Solicitudes_GetSchema() ([]go_basic_orm.Model, string) {
 		Required:    true,
 		Type:        "string",
 		Strings: go_basic_orm.Strings{
-			Min:       6,
-			Max:       9,
-			LowerCase: true,
+			Min: 6,
+			Max: 9,
 		},
 	})
 	solicitudes = append(solicitudes, go_basic_orm.Model{ //asunto
@@ -57,8 +55,8 @@ func Solicitudes_GetSchema() ([]go_basic_orm.Model, string) {
 		Required:    true,
 		Type:        "string",
 		Strings: go_basic_orm.Strings{
-			Min:       10,
-			Max:       100,
+			Min:       5,
+			Max:       150,
 			LowerCase: true,
 		},
 	})
@@ -68,7 +66,7 @@ func Solicitudes_GetSchema() ([]go_basic_orm.Model, string) {
 		Type:        "string",
 		Strings: go_basic_orm.Strings{
 			Min:       10,
-			Max:       100,
+			Max:       500,
 			LowerCase: true,
 		},
 	})

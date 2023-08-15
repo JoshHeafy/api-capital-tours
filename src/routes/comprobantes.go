@@ -55,7 +55,7 @@ func getOneComprobanteDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_data_comprobante_detail, _ := new(go_basic_orm.Querys).NewQuerys("detalle_comprobantes").Select().Where("id_comprobante_pago", "=", id_comprobante_pago).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
+	_data_comprobante_detail, _ := new(go_basic_orm.Querys).NewQuerys("detalle_comprobantes dc").Select().InnerJoin("comprobante_pago cp", "dc.id_comprobante_pago = cp.id_comprobante_pago").Exec(go_basic_orm.Config_Query{Cloud: true}).One()
 
 	if len(_data_comprobante_detail) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))

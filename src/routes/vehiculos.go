@@ -16,7 +16,8 @@ func RutasVehiculos(r *mux.Router) {
 	s := r.PathPrefix("/vehiculos").Subrouter()
 
 	s.Handle("/list", middleware.Autentication(http.HandlerFunc(getVehiculos))).Methods("GET")
-	s.Handle("/info/{numero_documento}", middleware.Autentication(http.HandlerFunc(getClientVehiculo))).Methods("GET")
+	s.Handle("/info/{numero_documento}", middleware.Autentication(http.HandlerFunc(getClientVehiculos))).Methods("GET")
+	s.Handle("/info-placa/{numero_placa}", middleware.Autentication(http.HandlerFunc(getClientVehiculoByPlaca))).Methods("GET")
 	s.Handle("/create", middleware.Autentication(http.HandlerFunc(insertVehiculos))).Methods("POST")
 	s.Handle("/update/{numero_placa}", middleware.Autentication(http.HandlerFunc(updateVehiculo))).Methods("PUT")
 	s.Handle("/re-assign/{numero_placa}", middleware.Autentication(http.HandlerFunc(reAssignVehiculo))).Methods("PUT")
@@ -67,7 +68,7 @@ func insertVehiculos(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func getClientVehiculo(w http.ResponseWriter, r *http.Request) {
+func getClientVehiculos(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
@@ -81,6 +82,25 @@ func getClientVehiculo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.Data["vehiculos-info"] = _data_client_car
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func getClientVehiculoByPlaca(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	response := controller.NewResponseManager()
+
+	params := mux.Vars(r)
+	numero_placa := params["numero_placa"]
+
+	_data_client_car, _ := new(go_basic_orm.Querys).NewQuerys("vehiculos").Select().Where("numero_placa", "=", numero_placa).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
+	if len(_data_client_car) <= 0 {
+		controller.ErrorsWaning(w, errors.New("no se encontró este vehículo"))
+		return
+	}
+
+	response.Data["vehiculo-info"] = _data_client_car
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)

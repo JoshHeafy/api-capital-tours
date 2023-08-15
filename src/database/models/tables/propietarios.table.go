@@ -12,6 +12,7 @@ func Propietarios_GetSchema() ([]go_basic_orm.Model, string) {
 		Description: "numero_documento",
 		Important:   true,
 		Required:    true,
+		Update:      false,
 		Type:        "string",
 		Strings: go_basic_orm.Strings{
 			Min: 8,
@@ -22,6 +23,7 @@ func Propietarios_GetSchema() ([]go_basic_orm.Model, string) {
 		Name:        "tipo_documento",
 		Description: "tipo_documento",
 		Required:    true,
+		Update:      false,
 		Type:        "uint64",
 		Uint:        go_basic_orm.Uints{},
 	})
