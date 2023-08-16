@@ -20,6 +20,7 @@ func RutasInscripciones(r *mux.Router) {
 	s := r.PathPrefix("/inscripciones").Subrouter()
 
 	s.Handle("/list", middleware.Autentication(http.HandlerFunc(getInscripciones))).Methods("GET")
+	s.Handle("/list-last", middleware.Autentication(http.HandlerFunc(getLastInscripciones))).Methods("GET")
 	s.Handle("/info/{numero_documento}", middleware.Autentication(http.HandlerFunc(getInscripcionByClient))).Methods("GET")
 	s.Handle("/create-ins", middleware.Autentication(http.HandlerFunc(insertInscripciones))).Methods("POST")
 	s.Handle("/service-alta/{numero_placa}", middleware.Autentication(http.HandlerFunc(darAlta))).Methods("PUT")
@@ -39,6 +40,29 @@ func getInscripciones(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.Data["inscripciones"] = _data_inscripciones
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func getLastInscripciones(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	response := controller.NewResponseManager()
+
+	_data_inscripciones, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select().OrderBy("TO_DATE(fecha_inicio, 'DD/MM/YYYY') DESC").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+
+	if len(_data_inscripciones) <= 0 {
+		controller.ErrorsWaning(w, errors.New("no se encontro suscripciónes"))
+		return
+	}
+
+	var inscripciones []map[string]interface{}
+	for i, ins := range _data_inscripciones {
+		if i < 5 {
+			inscripciones = append(inscripciones, ins)
+		}
+	}
+
+	response.Data["inscripciones"] = inscripciones
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }

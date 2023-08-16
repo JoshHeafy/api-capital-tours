@@ -22,6 +22,7 @@ func main() {
 	routes.RutasVehiculos(r)
 	routes.RutasInscripciones(r)
 	routes.RutasComprobantes(r)
+	routes.RutasAnalytics(r)
 
 	fmt.Println("Server on port 5000")
 	log.Fatal(http.ListenAndServe(":5000", r))
