@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
 	"api-capital-tours/src/database/orm"
@@ -10,7 +9,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/deybin/go_basic_orm"
 	"github.com/gorilla/mux"
 )
 
@@ -50,14 +48,14 @@ func insertSolicitud(w http.ResponseWriter, r *http.Request) {
 	data_insert := append([]map[string]interface{}{}, data_request)
 
 	schema, table := tables.Solicitudes_GetSchema()
-	solicitudes := go_basic_orm.SqlExec{}
+	solicitudes := orm.SqlExec{}
 	err = solicitudes.New(data_insert, table).Insert(schema)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = solicitudes.Exec(auth.GetDBName())
+	err = solicitudes.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -82,14 +80,14 @@ func markAsRead(w http.ResponseWriter, r *http.Request) {
 	})
 
 	schema, table := tables.Solicitudes_GetSchema()
-	solicitudes := go_basic_orm.SqlExec{}
+	solicitudes := orm.SqlExec{}
 	err := solicitudes.New(data_update, table).Update(schema)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = solicitudes.Exec(auth.GetDBName())
+	err = solicitudes.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return

@@ -1,88 +1,89 @@
 package tables
 
 import (
-	"github.com/deybin/go_basic_orm"
+	"api-capital-tours/src/database/models"
+
 	"github.com/google/uuid"
 )
 
-func Detalleinscripciones_GetSchema() ([]go_basic_orm.Model, string) {
-	var detalleinscripciones []go_basic_orm.Model
+func Detalleinscripciones_GetSchema() ([]models.Base, string) {
+	var detalleinscripciones []models.Base
 	tableName := "detalle_" + "inscripciones"
-	detalleinscripciones = append(detalleinscripciones, go_basic_orm.Model{ //id_detalle_inscripcion
+	detalleinscripciones = append(detalleinscripciones, models.Base{ //id_detalle_inscripcion
 		Name:        "id_detalle_inscripcion",
 		Description: "id_detalle_inscripcion",
 		Default:     uuid.New().String(),
 		Required:    true,
 		Type:        "string",
-		Strings:     go_basic_orm.Strings{},
+		Strings:     models.Strings{},
 	})
-	detalleinscripciones = append(detalleinscripciones, go_basic_orm.Model{ //fecha_pago
+	detalleinscripciones = append(detalleinscripciones, models.Base{ //fecha_pago
 		Name:        "fecha_pago",
 		Description: "fecha_pago",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Min:  10,
 			Date: true,
 		},
 	})
-	detalleinscripciones = append(detalleinscripciones, go_basic_orm.Model{ //years
+	detalleinscripciones = append(detalleinscripciones, models.Base{ //years
 		Name:        "years",
 		Description: "years",
 		Required:    true,
 		Update:      true,
 		Type:        "uint64",
-		Uint: go_basic_orm.Uints{
+		Uint: models.Uints{
 			Max: 3000,
 		},
 	})
-	detalleinscripciones = append(detalleinscripciones, go_basic_orm.Model{ //months
+	detalleinscripciones = append(detalleinscripciones, models.Base{ //months
 		Name:        "months",
 		Description: "months",
 		Required:    true,
 		Update:      true,
 		Type:        "uint64",
-		Uint: go_basic_orm.Uints{
+		Uint: models.Uints{
 			Max: 12,
 		},
 	})
-	detalleinscripciones = append(detalleinscripciones, go_basic_orm.Model{ //importe
+	detalleinscripciones = append(detalleinscripciones, models.Base{ //importe
 		Name:        "importe",
 		Description: "importe",
 		Update:      true,
 		Type:        "float64",
-		Float:       go_basic_orm.Floats{},
+		Float:       models.Floats{},
 	})
-	detalleinscripciones = append(detalleinscripciones, go_basic_orm.Model{ //numero_documento
+	detalleinscripciones = append(detalleinscripciones, models.Base{ //numero_documento
 		Name:        "numero_documento",
 		Description: "numero_documento",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Max: 11,
 			Min: 8,
 		},
 	})
-	detalleinscripciones = append(detalleinscripciones, go_basic_orm.Model{ //estado
+	detalleinscripciones = append(detalleinscripciones, models.Base{ //estado
 		Name:        "estado",
 		Description: "estado",
 		Default:     1,
 		Required:    true,
 		Update:      true,
 		Type:        "uint64",
-		Uint: go_basic_orm.Uints{
+		Uint: models.Uints{
 			Max: 1,
 		},
 	})
-	detalleinscripciones = append(detalleinscripciones, go_basic_orm.Model{ //id_inscripcion
+	detalleinscripciones = append(detalleinscripciones, models.Base{ //id_inscripcion
 		Name:        "id_inscripcion",
 		Description: "id_inscripcion",
 		Required:    true,
 		Important:   true,
 		Type:        "string",
-		Strings:     go_basic_orm.Strings{},
+		Strings:     models.Strings{},
 	})
 	return detalleinscripciones, tableName
 }

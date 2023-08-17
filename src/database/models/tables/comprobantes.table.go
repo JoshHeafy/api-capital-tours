@@ -1,130 +1,131 @@
 package tables
 
 import (
-	"github.com/deybin/go_basic_orm"
+	"api-capital-tours/src/database/models"
+
 	"github.com/google/uuid"
 )
 
-func Comprobante_GetSchema() ([]go_basic_orm.Model, string) {
-	var comprobante []go_basic_orm.Model
+func Comprobante_GetSchema() ([]models.Base, string) {
+	var comprobante []models.Base
 	tableName := "comprobante_" + "pago"
-	comprobante = append(comprobante, go_basic_orm.Model{ //id_comprobante_comprobante
+	comprobante = append(comprobante, models.Base{ //id_comprobante_comprobante
 		Name:        "id_comprobante_pago",
 		Description: "id_comprobante_pago",
 		Important:   true,
 		Required:    true,
 		Default:     uuid.New().String(),
 		Type:        "string",
-		Strings:     go_basic_orm.Strings{},
+		Strings:     models.Strings{},
 	})
-	comprobante = append(comprobante, go_basic_orm.Model{ //numero_documento
+	comprobante = append(comprobante, models.Base{ //numero_documento
 		Name:        "numero_documento",
 		Description: "numero_documento",
 		Required:    true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Min:       1,
 			Max:       11,
 			LowerCase: true,
 		},
 	})
-	comprobante = append(comprobante, go_basic_orm.Model{ //tipo
+	comprobante = append(comprobante, models.Base{ //tipo
 		Name:        "tipo",
 		Description: "tipo",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Min:       0,
 			Max:       2,
 			LowerCase: true,
 		},
 	})
-	comprobante = append(comprobante, go_basic_orm.Model{ //numero_serie
+	comprobante = append(comprobante, models.Base{ //numero_serie
 		Name:        "numero_serie",
 		Description: "numero_serie",
 		Required:    true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Min:       0,
 			Max:       4,
 			LowerCase: true,
 		},
 	})
-	comprobante = append(comprobante, go_basic_orm.Model{ //numero_comprobante
+	comprobante = append(comprobante, models.Base{ //numero_comprobante
 		Name:        "numero_comprobante",
 		Description: "numero_comprobante",
 		Required:    true,
 		Type:        "string",
-		Strings:     go_basic_orm.Strings{},
+		Strings:     models.Strings{},
 	})
-	comprobante = append(comprobante, go_basic_orm.Model{ //fecha_pago
+	comprobante = append(comprobante, models.Base{ //fecha_pago
 		Name:        "fecha_pago",
 		Description: "fecha_pago",
 		Required:    true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Date: true,
 		},
 	})
-	comprobante = append(comprobante, go_basic_orm.Model{ //importe
+	comprobante = append(comprobante, models.Base{ //importe
 		Name:        "importe",
 		Description: "importe",
 		Required:    true,
 		Type:        "float64",
 
-		Float: go_basic_orm.Floats{},
+		Float: models.Floats{},
 	})
-	comprobante = append(comprobante, go_basic_orm.Model{ //igv
+	comprobante = append(comprobante, models.Base{ //igv
 		Name:        "igv",
 		Description: "igv",
 		Required:    true,
 		Update:      true,
 		Type:        "float64",
-		Float:       go_basic_orm.Floats{},
+		Float:       models.Floats{},
 	})
-	comprobante = append(comprobante, go_basic_orm.Model{ //descuento
+	comprobante = append(comprobante, models.Base{ //descuento
 		Name:        "descuento",
 		Description: "descuento",
 		Type:        "float64",
 
-		Float: go_basic_orm.Floats{},
+		Float: models.Floats{},
 	})
-	comprobante = append(comprobante, go_basic_orm.Model{ //total
+	comprobante = append(comprobante, models.Base{ //total
 		Name:        "total",
 		Description: "total",
 		Required:    true,
 		Type:        "float64",
-		Float:       go_basic_orm.Floats{},
+		Float:       models.Floats{},
 	})
-	comprobante = append(comprobante, go_basic_orm.Model{ //observaciones
+	comprobante = append(comprobante, models.Base{ //observaciones
 		Name:        "observaciones",
 		Description: "observaciones",
 		Update:      true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Max:       100,
 			LowerCase: true,
 		},
 	})
-	comprobante = append(comprobante, go_basic_orm.Model{ //estado
+	comprobante = append(comprobante, models.Base{ //estado
 		Name:        "estado",
 		Description: "estado",
 		Default:     1,
 		Required:    true,
 		Update:      true,
 		Type:        "uint64",
-		Uint: go_basic_orm.Uints{
+		Uint: models.Uints{
 			Max: 10,
 		},
 	})
-	comprobante = append(comprobante, go_basic_orm.Model{ //id_inscripcion
+	comprobante = append(comprobante, models.Base{ //id_inscripcion
 		Name:        "id_inscripcion",
 		Description: "id_inscripcion",
 		Required:    true,
 		Important:   true,
 		Type:        "string",
-		Strings:     go_basic_orm.Strings{},
+		Strings:     models.Strings{},
 	})
 
 	return comprobante, tableName

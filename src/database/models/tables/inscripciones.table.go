@@ -1,124 +1,125 @@
 package tables
 
 import (
-	"github.com/deybin/go_basic_orm"
+	"api-capital-tours/src/database/models"
+
 	"github.com/google/uuid"
 )
 
-func Inscripciones_GetSchema() ([]go_basic_orm.Model, string) {
-	var inscripciones []go_basic_orm.Model
+func Inscripciones_GetSchema() ([]models.Base, string) {
+	var inscripciones []models.Base
 	tableName := "inscripciones"
 	id_inscripcion := uuid.New().String()
-	inscripciones = append(inscripciones, go_basic_orm.Model{ //id_inscripcion
+	inscripciones = append(inscripciones, models.Base{ //id_inscripcion
 		Name:        "id_inscripcion",
 		Description: "id_inscripcion",
 		Required:    true,
 		Default:     id_inscripcion,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Max: 36,
 		},
 	})
-	inscripciones = append(inscripciones, go_basic_orm.Model{ //numero_documento
+	inscripciones = append(inscripciones, models.Base{ //numero_documento
 		Name:        "numero_documento",
 		Description: "numero_documento",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Max: 11,
 			Min: 8,
 		},
 	})
-	inscripciones = append(inscripciones, go_basic_orm.Model{ //fecha_inicio
+	inscripciones = append(inscripciones, models.Base{ //fecha_inicio
 		Name:        "fecha_inicio",
 		Description: "fecha_inicio",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Min:  10,
 			Date: true,
 		},
 	})
-	inscripciones = append(inscripciones, go_basic_orm.Model{ //importe
+	inscripciones = append(inscripciones, models.Base{ //importe
 		Name:        "importe",
 		Description: "importe",
 		Update:      true,
 		Type:        "float64",
-		Float: go_basic_orm.Floats{
+		Float: models.Floats{
 			Menor: 49,
 		},
 	})
-	inscripciones = append(inscripciones, go_basic_orm.Model{ //fecha_pago
+	inscripciones = append(inscripciones, models.Base{ //fecha_pago
 		Name:        "fecha_pago",
 		Description: "fecha_pago",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Min:  10,
 			Date: true,
 		},
 	})
-	inscripciones = append(inscripciones, go_basic_orm.Model{ //years
+	inscripciones = append(inscripciones, models.Base{ //years
 		Name:        "years",
 		Description: "years",
 		Required:    true,
 		Update:      true,
 		Type:        "uint64",
-		Uint: go_basic_orm.Uints{
+		Uint: models.Uints{
 			Max: 3000,
 		},
 	})
-	inscripciones = append(inscripciones, go_basic_orm.Model{ //months
+	inscripciones = append(inscripciones, models.Base{ //months
 		Name:        "months",
 		Description: "months",
 		Required:    true,
 		Update:      true,
 		Type:        "uint64",
-		Uint: go_basic_orm.Uints{
+		Uint: models.Uints{
 			Max: 12,
 		},
 	})
-	inscripciones = append(inscripciones, go_basic_orm.Model{ //estado
+	inscripciones = append(inscripciones, models.Base{ //estado
 		Name:        "estado",
 		Description: "estado",
 		Default:     1,
 		Required:    true,
 		Update:      true,
 		Type:        "uint64",
-		Uint: go_basic_orm.Uints{
+		Uint: models.Uints{
 			Max: 1,
 		},
 	})
-	inscripciones = append(inscripciones, go_basic_orm.Model{ //fecha_fin
+	inscripciones = append(inscripciones, models.Base{ //fecha_fin
 		Name:        "fecha_fin",
 		Description: "fecha_fin",
 		Update:      true,
 		Empty:       true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Max: 10,
 		},
 	})
-	inscripciones = append(inscripciones, go_basic_orm.Model{ //numero_flota
+	inscripciones = append(inscripciones, models.Base{ //numero_flota
 		Name:        "numero_flota",
 		Description: "numero_flota",
 		Required:    true,
 		Update:      true,
 		Type:        "int64",
-		Int: go_basic_orm.Ints{
+		Int: models.Ints{
 			Min: 1,
 		},
 	})
-	inscripciones = append(inscripciones, go_basic_orm.Model{ //numero_placa
+	inscripciones = append(inscripciones, models.Base{ //numero_placa
 		Name:        "numero_placa",
 		Description: "numero_placa",
 		Required:    true,
 		Important:   true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			UpperCase: true,
 		},
 	})

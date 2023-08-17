@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
 	"api-capital-tours/src/database/orm"
@@ -10,7 +9,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/deybin/go_basic_orm"
 	"github.com/gorilla/mux"
 )
 
@@ -50,14 +48,14 @@ func insertPropietarios(w http.ResponseWriter, r *http.Request) {
 	data_insert := append([]map[string]interface{}{}, data_request)
 
 	schema, table := tables.Propietarios_GetSchema()
-	propietarios := go_basic_orm.SqlExec{}
+	propietarios := orm.SqlExec{}
 	err = propietarios.New(data_insert, table).Insert(schema)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = propietarios.Exec(auth.GetDBName())
+	err = propietarios.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -105,14 +103,14 @@ func updatePropietario(w http.ResponseWriter, r *http.Request) {
 	data_update = append(data_update, data_request)
 
 	schema, table := tables.Propietarios_GetSchema()
-	propietarios := go_basic_orm.SqlExec{}
+	propietarios := orm.SqlExec{}
 	err = propietarios.New(data_update, table).Update(schema)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = propietarios.Exec(auth.GetDBName())
+	err = propietarios.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return

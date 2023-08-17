@@ -14,7 +14,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/deybin/go_basic_orm"
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -52,8 +51,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-
-	// _data_user, _ := orm.NewQuerys("users_admin").Select().Where("username", "=", req_body["username"]).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
 
 	_data_user := orm.NewQuerys("users_admin").Select().Where("username", "=", req_body["username"]).Exec(orm.Config_Query{Cloud: true}).One()
 
@@ -126,14 +123,14 @@ func updateUserAdmin(w http.ResponseWriter, r *http.Request) {
 	data_update = append(data_update, data_request)
 
 	schema, table := tables.UserAdmin_GetSchema()
-	propietarios := go_basic_orm.SqlExec{}
+	propietarios := orm.SqlExec{}
 	err = propietarios.New(data_update, table).Update(schema)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = propietarios.Exec(auth.GetDBName())
+	err = propietarios.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -185,14 +182,14 @@ func changePassUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	schema, table := tables.UserAdmin_GetSchema()
-	users := go_basic_orm.SqlExec{}
+	users := orm.SqlExec{}
 	errUpd := users.New(UpdatePassword, table).Update(schema)
 	if errUpd != nil {
 		controller.ErrorsWaning(w, errUpd)
 		return
 	}
 
-	errUpd = users.Exec(auth.GetDBName())
+	errUpd = users.Exec()
 	if errUpd != nil {
 		controller.ErrorsWaning(w, errUpd)
 		return

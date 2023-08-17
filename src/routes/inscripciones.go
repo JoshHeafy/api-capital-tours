@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
 	"api-capital-tours/src/database/orm"
@@ -14,7 +13,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/deybin/go_basic_orm"
 	"github.com/gorilla/mux"
 )
 
@@ -118,14 +116,14 @@ func insertInscripciones(w http.ResponseWriter, r *http.Request) {
 	data_insert["fecha_pago"] = string(fechaPago.Format("02/01/2006"))
 
 	schema, table := tables.Inscripciones_GetSchema()
-	inscripciones := go_basic_orm.SqlExec{}
+	inscripciones := orm.SqlExec{}
 	err = inscripciones.New([]map[string]interface{}{data_insert}, table).Insert(schema)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = inscripciones.Exec(auth.GetDBName())
+	err = inscripciones.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -139,14 +137,14 @@ func insertInscripciones(w http.ResponseWriter, r *http.Request) {
 	data_insert_detalle_inscripcion["id_inscripcion"] = inscripciones.Data[0]["id_inscripcion"]
 
 	schema_ins_detail, table := tables.Detalleinscripciones_GetSchema()
-	inscripciones_detail := go_basic_orm.SqlExec{}
+	inscripciones_detail := orm.SqlExec{}
 	err = inscripciones_detail.New([]map[string]interface{}{data_insert_detalle_inscripcion}, table).Insert(schema_ins_detail)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = inscripciones_detail.Exec(auth.GetDBName())
+	err = inscripciones_detail.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -185,13 +183,13 @@ func darAlta(w http.ResponseWriter, r *http.Request) {
 	data_update = append(data_update, updateMap)
 
 	schema, table := tables.Inscripciones_GetSchema()
-	servicio := go_basic_orm.SqlExec{}
+	servicio := orm.SqlExec{}
 	err := servicio.New(data_update, table).Update(schema)
 	if err != nil {
 		controller.ErrorsWaning(w, errors.New(err.Error()))
 		return
 	}
-	err = servicio.Exec(auth.GetDBName())
+	err = servicio.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -218,14 +216,14 @@ func darBaja(w http.ResponseWriter, r *http.Request) {
 	})
 
 	schema, table := tables.Inscripciones_GetSchema()
-	servicio := go_basic_orm.SqlExec{}
+	servicio := orm.SqlExec{}
 	err := servicio.New(data_update, table).Update(schema)
 	if err != nil {
 		controller.ErrorsWaning(w, errors.New(err.Error()))
 		return
 	}
 
-	err = servicio.Exec(auth.GetDBName())
+	err = servicio.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return

@@ -1,76 +1,77 @@
 package tables
 
 import (
-	"github.com/deybin/go_basic_orm"
+	"api-capital-tours/src/database/models"
+
 	"github.com/google/uuid"
 )
 
-func Solicitudes_GetSchema() ([]go_basic_orm.Model, string) {
-	var solicitudes []go_basic_orm.Model
+func Solicitudes_GetSchema() ([]models.Base, string) {
+	var solicitudes []models.Base
 	tableName := "solicitudes"
 
-	solicitudes = append(solicitudes, go_basic_orm.Model{ //id_solicitud
+	solicitudes = append(solicitudes, models.Base{ //id_solicitud
 		Name:        "id_solicitud",
 		Description: "id_solicitud",
 		Default:     uuid.New().String(),
 		Important:   true,
 		Required:    true,
 		Type:        "string",
-		Strings:     go_basic_orm.Strings{},
+		Strings:     models.Strings{},
 	})
-	solicitudes = append(solicitudes, go_basic_orm.Model{ //nombre
+	solicitudes = append(solicitudes, models.Base{ //nombre
 		Name:        "nombre",
 		Description: "nombre",
 		Required:    true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Min:       10,
 			Max:       200,
 			LowerCase: true,
 		},
 	})
-	solicitudes = append(solicitudes, go_basic_orm.Model{ //email
+	solicitudes = append(solicitudes, models.Base{ //email
 		Name:        "email",
 		Description: "email",
 		Required:    true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Min: 12,
 			Max: 100,
 		},
 	})
-	solicitudes = append(solicitudes, go_basic_orm.Model{ //telefono
+	solicitudes = append(solicitudes, models.Base{ //telefono
 		Name:        "telefono",
 		Description: "telefono",
 		Required:    true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Min: 6,
 			Max: 9,
 		},
 	})
-	solicitudes = append(solicitudes, go_basic_orm.Model{ //asunto
+	solicitudes = append(solicitudes, models.Base{ //asunto
 		Name:        "asunto",
 		Description: "asunto",
 		Required:    true,
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Min:       5,
 			Max:       150,
 			LowerCase: true,
 		},
 	})
-	solicitudes = append(solicitudes, go_basic_orm.Model{ //mensaje
+	solicitudes = append(solicitudes, models.Base{ //mensaje
 		Name:        "mensaje",
 		Description: "mensaje",
 		Type:        "string",
-		Strings: go_basic_orm.Strings{
+		Strings: models.Strings{
 			Min:       10,
 			Max:       500,
 			LowerCase: true,
 		},
 	})
-	solicitudes = append(solicitudes, go_basic_orm.Model{ //leido
+	solicitudes = append(solicitudes, models.Base{ //leido
 		Name:        "leido",
 		Description: "leido",
 		Type:        "uint64",

@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
 	"api-capital-tours/src/database/orm"
@@ -10,7 +9,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/deybin/go_basic_orm"
 	"github.com/gorilla/mux"
 )
 
@@ -52,14 +50,14 @@ func insertVehiculos(w http.ResponseWriter, r *http.Request) {
 	data_insert := append([]map[string]interface{}{}, data_request)
 
 	schema, table := tables.Vehiculos_GetSchema()
-	vehiculos := go_basic_orm.SqlExec{}
+	vehiculos := orm.SqlExec{}
 	err = vehiculos.New(data_insert, table).Insert(schema)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = vehiculos.Exec(auth.GetDBName())
+	err = vehiculos.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -125,14 +123,14 @@ func updateVehiculo(w http.ResponseWriter, r *http.Request) {
 	data_update = append(data_update, data_request)
 
 	schema, table := tables.Vehiculos_GetSchema()
-	vehiculos := go_basic_orm.SqlExec{}
+	vehiculos := orm.SqlExec{}
 	err = vehiculos.New(data_update, table).Update(schema)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = vehiculos.Exec(auth.GetDBName())
+	err = vehiculos.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -190,14 +188,14 @@ func reAssignVehiculo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	schema, table := tables.Vehiculos_GetSchema()
-	vehiculos := go_basic_orm.SqlExec{}
+	vehiculos := orm.SqlExec{}
 	err = vehiculos.New(data_update_vehiculo, table).Update(schema)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = vehiculos.Exec(auth.GetDBName())
+	err = vehiculos.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -212,14 +210,14 @@ func reAssignVehiculo(w http.ResponseWriter, r *http.Request) {
 
 func reAssingInscripcionInsert(w http.ResponseWriter, r *http.Request, data []map[string]interface{}) map[string]interface{} {
 	schemaIns, tableIns := tables.Inscripciones_GetSchema()
-	inscripciones := go_basic_orm.SqlExec{}
+	inscripciones := orm.SqlExec{}
 	errIns := inscripciones.New(data, tableIns).Update(schemaIns)
 	if errIns != nil {
 		controller.ErrorsWaning(w, errIns)
 		return map[string]interface{}{}
 	}
 
-	errIns = inscripciones.Exec(auth.GetDBName())
+	errIns = inscripciones.Exec()
 	if errIns != nil {
 		controller.ErrorsWaning(w, errIns)
 		return map[string]interface{}{}
@@ -230,14 +228,14 @@ func reAssingInscripcionInsert(w http.ResponseWriter, r *http.Request, data []ma
 
 func reAssingInscripcionDetailInsert(w http.ResponseWriter, r *http.Request, data []map[string]interface{}) map[string]interface{} {
 	schema, table := tables.Detalleinscripciones_GetSchema()
-	inscripciones_detail := go_basic_orm.SqlExec{}
+	inscripciones_detail := orm.SqlExec{}
 	err := inscripciones_detail.New(data, table).Update(schema)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return map[string]interface{}{}
 	}
 
-	err = inscripciones_detail.Exec(auth.GetDBName())
+	err = inscripciones_detail.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return map[string]interface{}{}

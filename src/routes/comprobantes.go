@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
 	"api-capital-tours/src/database/orm"
@@ -14,7 +13,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/deybin/go_basic_orm"
 	"github.com/gorilla/mux"
 )
 
@@ -133,14 +131,14 @@ func insertComprobante(w http.ResponseWriter, r *http.Request) {
 
 	//insert a comprobante_pago
 	schema_comprobante, table := tables.Comprobante_GetSchema()
-	comprobantes := go_basic_orm.SqlExec{}
+	comprobantes := orm.SqlExec{}
 	err = comprobantes.New([]map[string]interface{}{data_insert}, table).Insert(schema_comprobante)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = comprobantes.Exec(auth.GetDBName())
+	err = comprobantes.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -156,14 +154,14 @@ func insertComprobante(w http.ResponseWriter, r *http.Request) {
 
 	//insert a detalle_comprobantes
 	schema_comprobante_detail, table := tables.DetalleComprobantes_GetSchema()
-	comprobantes_detalle := go_basic_orm.SqlExec{}
+	comprobantes_detalle := orm.SqlExec{}
 	err = comprobantes_detalle.New([]map[string]interface{}{data_insert_comprobante_detail}, table).Insert(schema_comprobante_detail)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = comprobantes_detalle.Exec(auth.GetDBName())
+	err = comprobantes_detalle.Exec()
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
