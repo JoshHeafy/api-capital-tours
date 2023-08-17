@@ -1,5 +1,4 @@
-CREATE DATABASE capital_tours;
-
+-- CREATE DATABASE capital_tours;
 CREATE TABLE
     propietarios (
         numero_documento VARCHAR(11) NOT NULL PRIMARY KEY,
@@ -95,7 +94,6 @@ CREATE TABLE
 --         id_inscripcion VARCHAR(36) NOT NULL,
 --         CONSTRAINT fk_permisos_inscripciones FOREIGN KEY (id_inscripcion) REFERENCES inscripciones (id_inscripcion)
 --     );
-
 --web
 CREATE TABLE
     solicitudes (
@@ -135,332 +133,325 @@ CREATE TABLE
     );
 
 ------------------------------------------------------------------------
--- Insertar propietarios
-INSERT INTO
-    propietarios (
-        numero_documento,
-        nombre_propietario,
-        direccion,
-        referencia,
-        tipo_documento,
-        telefono,
-        email
-    )
-VALUES
-    (
-        '87654321',
-        'alex smith',
-        'Dirección 1',
-        'Referencia 1',
-        1,
-        '987654321',
-        'propietario2@example.com'
-    ),
-    (
-        '98765432',
-        'marlon wayan',
-        'Dirección 2',
-        'Referencia 2',
-        1,
-        '654321987',
-        'propietario3@example.com'
-    ),
-    (
-        '12345678',
-        'matt kunshall',
-        'Dirección 3',
-        'Referencia 3',
-        1,
-        '123456789',
-        'propietario1@example.com'
-    ),
-    (
-        '12345678901',
-        'jhon does',
-        '123 Main St',
-        'near parks',
-        1,
-        '555-1234',
-        'john.doe@example.com'
-    ),
-    (
-        '78978987878',
-        'mateo sape',
-        'av siempreviva 123',
-        'entre dos postes',
-        1,
-        '987564848',
-        'mateo@gmail.com'
-    );
-
--- Insertar vehículos
-INSERT INTO
-    vehiculos (
-        numero_placa,
-        marca,
-        modelo,
-        anio,
-        color,
-        numero_serie,
-        numero_pasajeros,
-        numero_asientos,
-        observaciones,
-        numero_documento
-    )
-VALUES
-    (
-        '987-OYP',
-        'Marca 1',
-        'Modelo 1',
-        2020,
-        '#cde54e',
-        'ABC123',
-        4,
-        5,
-        'Observaciones 1',
-        '12345678'
-    ),
-    (
-        '654-RFD',
-        'Marca 2',
-        'Modelo 2',
-        2018,
-        '#ea525f',
-        'DEF456',
-        4,
-        5,
-        'Observaciones 2',
-        '12345678'
-    ),
-    (
-        '321-KJH',
-        'Marca 3',
-        'Modelo 3',
-        2019,
-        '#abece4',
-        'GHI789',
-        4,
-        5,
-        'Observaciones 3',
-        '87654321'
-    ),
-    (
-        '789-FGH',
-        'Marca 4',
-        'Modelo 4',
-        2021,
-        '#e15e6e',
-        'JKL012',
-        4,
-        5,
-        'Observaciones 4',
-        '98765432'
-    ),
-    (
-        'ABC123',
-        'Toyota',
-        'Camry',
-        2022,
-        '#FFFFFF',
-        '1234567890',
-        4,
-        5,
-        'No observations',
-        '12345678901'
-    ),
-    (
-        'ASD-589',
-        'toyota',
-        'toyota',
-        2015,
-        '#EDEBC9',
-        '5821546',
-        4,
-        4,
-        'ninguna',
-        '87654321'
-    ),
-    (
-        'FRT-586',
-        'nissan',
-        'nissan',
-        2018,
-        '#FF5254',
-        '857415851',
-        4,
-        5,
-        'ninguna',
-        '98765432'
-    );
-
--- Insertar inscripciones
-INSERT INTO
-    inscripciones (
-        id_inscripcion,
-        numero_documento,
-        fecha_inicio,
-        importe,
-        fecha_pago,
-        years,
-        months,
-        estado,
-        fecha_fin,
-        numero_flota,
-        numero_placa
-    )
-VALUES
-    (
-        'c0a7b6b4-cb52-4338-b2c9-344ee783ee3a',
-        '87654321',
-        '01/08/2023',
-        100,
-        '01/09/2023',
-        2023,
-        8,
-        1,
-        NULL,
-        36,
-        '321-KJH'
-    );
-
--- Insertar detalle_inscripciones
-INSERT INTO
-    detalle_inscripciones (
-        id_detalle_inscripcion,
-        fecha_pago,
-        years,
-        months,
-        importe,
-        numero_documento,
-        estado,
-        id_inscripcion
-    )
-VALUES
-    (
-        '616ac05b-be52-4ab8-8d02-fa28e4d4b70a',
-        '01/09/2023',
-        2023,
-        8,
-        100,
-        '87654321',
-        1,
-        'c0a7b6b4-cb52-4338-b2c9-344ee783ee3a'
-    );
-
--- Insertar comprobantes
-INSERT INTO
-    comprobante_pago (
-        id_comprobante_pago,
-        numero_documento,
-        tipo,
-        numero_serie,
-        numero_comprobante,
-        fecha_pago,
-        importe,
-        igv,
-        descuento,
-        total,
-        observaciones,
-        estado,
-        id_inscripcion
-    )
-VALUES
-    (
-        '415bc8fb-b811-45d4-944d-2b84be0c49c3',
-        '87654321',
-        '01',
-        '0001',
-        '0000000001',
-        '02/08/2023',
-        150,
-        0.18,
-        0,
-        177,
-        'ninguna',
-        1,
-        'c0a7b6b4-cb52-4338-b2c9-344ee783ee3a'
-    );
-
--- Insertar detalle_comprobantes
-INSERT INTO
-    detalle_comprobantes (
-        id_comprobante_pago,
-        item,
-        importe,
-        igv,
-        descuento,
-        total,
-        years,
-        months
-    )
-VALUES
-    (
-        '415bc8fb-b811-45d4-944d-2b84be0c49c3',
-        3,
-        150,
-        0.18,
-        0,
-        177,
-        2023,
-        8
-    );
-
--- Insertar user_admin
-INSERT INTO
-    users_admin (
-        id_user_admin,
-        cargo,
-        username,
-        nombre,
-        apellidos,
-        id_img,
-        email,
-        password
-    )
-VALUES
-    (
-        'bd4b2fd5-e250-4872-9faa-a7c48de0d65f',
-        0,
-        'supervisor',
-        'josh',
-        'cordova canchanya',
-        NULL,
-        'joshar456@gmail.com',
-        '$2a$10$P9CxqO3EgE0ftQL2Hpla7endolsLLVMjuG1MN6sllvwo2Ko2knIbG'
-    );
-
--- Insertar solicitudes
-INSERT INTO
-    solicitudes (
-        id_solicitudes,
-        nombre,
-        email,
-        telefono,
-        asunto,
-        mensaje
-    )
-VALUES
-    (
-        '1c371489-d193-4b72-aa43-639871d5a3ce',
-        'Usuario 1',
-        'usuario1@example.com',
-        '123456789',
-        'Asunto 1',
-        'Mensaje 1'
-    ),
-    (
-        '5a5af779-2845-4204-a637-05b29b9544a3',
-        'Usuario 2',
-        'usuario2@example.com',
-        '987654321',
-        'Asunto 2',
-        'Mensaje 2'
-    ),
-    (
-        '9b34d6a9-402b-4937-98bb-599a85a423c9',
-        'Usuario 3',
-        'usuario3@example.com',
-        '654321987',
-        'Asunto 3',
-        'Mensaje 3'
-    );
+-- -- Insertar propietarios
+-- INSERT INTO
+--     propietarios (
+--         numero_documento,
+--         nombre_propietario,
+--         direccion,
+--         referencia,
+--         tipo_documento,
+--         telefono,
+--         email
+--     )
+-- VALUES
+--     (
+--         '87654321',
+--         'alex smith',
+--         'Dirección 1',
+--         'Referencia 1',
+--         1,
+--         '987654321',
+--         'propietario2@example.com'
+--     ),
+--     (
+--         '98765432',
+--         'marlon wayan',
+--         'Dirección 2',
+--         'Referencia 2',
+--         1,
+--         '654321987',
+--         'propietario3@example.com'
+--     ),
+--     (
+--         '12345678',
+--         'matt kunshall',
+--         'Dirección 3',
+--         'Referencia 3',
+--         1,
+--         '123456789',
+--         'propietario1@example.com'
+--     ),
+--     (
+--         '12345678901',
+--         'jhon does',
+--         '123 Main St',
+--         'near parks',
+--         1,
+--         '555-1234',
+--         'john.doe@example.com'
+--     ),
+--     (
+--         '78978987878',
+--         'mateo sape',
+--         'av siempreviva 123',
+--         'entre dos postes',
+--         1,
+--         '987564848',
+--         'mateo@gmail.com'
+--     );
+-- -- Insertar vehículos
+-- INSERT INTO
+--     vehiculos (
+--         numero_placa,
+--         marca,
+--         modelo,
+--         anio,
+--         color,
+--         numero_serie,
+--         numero_pasajeros,
+--         numero_asientos,
+--         observaciones,
+--         numero_documento
+--     )
+-- VALUES
+--     (
+--         '987-OYP',
+--         'Marca 1',
+--         'Modelo 1',
+--         2020,
+--         '#cde54e',
+--         'ABC123',
+--         4,
+--         5,
+--         'Observaciones 1',
+--         '12345678'
+--     ),
+--     (
+--         '654-RFD',
+--         'Marca 2',
+--         'Modelo 2',
+--         2018,
+--         '#ea525f',
+--         'DEF456',
+--         4,
+--         5,
+--         'Observaciones 2',
+--         '12345678'
+--     ),
+--     (
+--         '321-KJH',
+--         'Marca 3',
+--         'Modelo 3',
+--         2019,
+--         '#abece4',
+--         'GHI789',
+--         4,
+--         5,
+--         'Observaciones 3',
+--         '87654321'
+--     ),
+--     (
+--         '789-FGH',
+--         'Marca 4',
+--         'Modelo 4',
+--         2021,
+--         '#e15e6e',
+--         'JKL012',
+--         4,
+--         5,
+--         'Observaciones 4',
+--         '98765432'
+--     ),
+--     (
+--         'ABC123',
+--         'Toyota',
+--         'Camry',
+--         2022,
+--         '#FFFFFF',
+--         '1234567890',
+--         4,
+--         5,
+--         'No observations',
+--         '12345678901'
+--     ),
+--     (
+--         'ASD-589',
+--         'toyota',
+--         'toyota',
+--         2015,
+--         '#EDEBC9',
+--         '5821546',
+--         4,
+--         4,
+--         'ninguna',
+--         '87654321'
+--     ),
+--     (
+--         'FRT-586',
+--         'nissan',
+--         'nissan',
+--         2018,
+--         '#FF5254',
+--         '857415851',
+--         4,
+--         5,
+--         'ninguna',
+--         '98765432'
+--     );
+-- -- Insertar inscripciones
+-- INSERT INTO
+--     inscripciones (
+--         id_inscripcion,
+--         numero_documento,
+--         fecha_inicio,
+--         importe,
+--         fecha_pago,
+--         years,
+--         months,
+--         estado,
+--         fecha_fin,
+--         numero_flota,
+--         numero_placa
+--     )
+-- VALUES
+--     (
+--         'c0a7b6b4-cb52-4338-b2c9-344ee783ee3a',
+--         '87654321',
+--         '01/08/2023',
+--         100,
+--         '01/09/2023',
+--         2023,
+--         8,
+--         1,
+--         NULL,
+--         36,
+--         '321-KJH'
+--     );
+-- -- Insertar detalle_inscripciones
+-- INSERT INTO
+--     detalle_inscripciones (
+--         id_detalle_inscripcion,
+--         fecha_pago,
+--         years,
+--         months,
+--         importe,
+--         numero_documento,
+--         estado,
+--         id_inscripcion
+--     )
+-- VALUES
+--     (
+--         '616ac05b-be52-4ab8-8d02-fa28e4d4b70a',
+--         '01/09/2023',
+--         2023,
+--         8,
+--         100,
+--         '87654321',
+--         1,
+--         'c0a7b6b4-cb52-4338-b2c9-344ee783ee3a'
+--     );
+-- -- Insertar comprobantes
+-- INSERT INTO
+--     comprobante_pago (
+--         id_comprobante_pago,
+--         numero_documento,
+--         tipo,
+--         numero_serie,
+--         numero_comprobante,
+--         fecha_pago,
+--         importe,
+--         igv,
+--         descuento,
+--         total,
+--         observaciones,
+--         estado,
+--         id_inscripcion
+--     )
+-- VALUES
+--     (
+--         '415bc8fb-b811-45d4-944d-2b84be0c49c3',
+--         '87654321',
+--         '01',
+--         '0001',
+--         '0000000001',
+--         '02/08/2023',
+--         150,
+--         0.18,
+--         0,
+--         177,
+--         'ninguna',
+--         1,
+--         'c0a7b6b4-cb52-4338-b2c9-344ee783ee3a'
+--     );
+-- -- Insertar detalle_comprobantes
+-- INSERT INTO
+--     detalle_comprobantes (
+--         id_comprobante_pago,
+--         item,
+--         importe,
+--         igv,
+--         descuento,
+--         total,
+--         years,
+--         months
+--     )
+-- VALUES
+--     (
+--         '415bc8fb-b811-45d4-944d-2b84be0c49c3',
+--         3,
+--         150,
+--         0.18,
+--         0,
+--         177,
+--         2023,
+--         8
+--     );
+-- -- Insertar user_admin
+-- INSERT INTO
+--     users_admin (
+--         id_user_admin,
+--         cargo,
+--         username,
+--         nombre,
+--         apellidos,
+--         id_img,
+--         email,
+--         password
+--     )
+-- VALUES
+--     (
+--         'bd4b2fd5-e250-4872-9faa-a7c48de0d65f',
+--         0,
+--         'supervisor',
+--         'josh',
+--         'cordova canchanya',
+--         NULL,
+--         'joshar456@gmail.com',
+--         '$2a$10$P9CxqO3EgE0ftQL2Hpla7endolsLLVMjuG1MN6sllvwo2Ko2knIbG'
+--     );
+-- -- Insertar solicitudes
+-- INSERT INTO
+--     solicitudes (
+--         id_solicitudes,
+--         nombre,
+--         email,
+--         telefono,
+--         asunto,
+--         mensaje
+--     )
+-- VALUES
+--     (
+--         '1c371489-d193-4b72-aa43-639871d5a3ce',
+--         'Usuario 1',
+--         'usuario1@example.com',
+--         '123456789',
+--         'Asunto 1',
+--         'Mensaje 1'
+--     ),
+--     (
+--         '5a5af779-2845-4204-a637-05b29b9544a3',
+--         'Usuario 2',
+--         'usuario2@example.com',
+--         '987654321',
+--         'Asunto 2',
+--         'Mensaje 2'
+--     ),
+--     (
+--         '9b34d6a9-402b-4937-98bb-599a85a423c9',
+--         'Usuario 3',
+--         'usuario3@example.com',
+--         '654321987',
+--         'Asunto 3',
+--         'Mensaje 3'
+--     );
