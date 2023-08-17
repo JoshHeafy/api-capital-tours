@@ -252,10 +252,6 @@ func consultaPeriodo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_data_detalle_comprobante := orm.NewQuerys("detalle_comprobantes dc").Select("months || '/' || years as periodo").InnerJoin("comprobante_pago cp", "cp.id_comprobante_pago = dc.id_comprobante_pago").Where("cp.id_inscripcion", "=", _data_inscripcion["id_inscripcion"]).Exec(orm.Config_Query{Cloud: true}).All()
-	if len(_data_detalle_comprobante) <= 0 {
-		controller.ErrorsWaning(w, errors.New("error al obtener comprobantes de pago"))
-		return
-	}
 
 	var newFact []string
 	for _, v := range _data_detalle_comprobante {
