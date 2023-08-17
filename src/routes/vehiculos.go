@@ -4,10 +4,10 @@ import (
 	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
+	"api-capital-tours/src/database/orm"
 	"api-capital-tours/src/middleware"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/deybin/go_basic_orm"
@@ -29,8 +29,8 @@ func getVehiculos(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
-	_data_vehiculos, err := new(go_basic_orm.Querys).NewQuerys("vehiculos").Select().OrderBy("numero_documento").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
-	if err != nil {
+	_data_vehiculos := orm.NewQuerys("vehiculos").Select().OrderBy("numero_documento").Exec(orm.Config_Query{Cloud: true}).All()
+	if len(_data_vehiculos) <= 0 {
 		controller.ErrorsWaning(w, errors.New("error al obtener vehículos"))
 		return
 	}
@@ -77,7 +77,7 @@ func getClientVehiculos(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	numero_documento := params["numero_documento"]
 
-	_data_client_car, _ := new(go_basic_orm.Querys).NewQuerys("vehiculos").Select().Where("numero_documento", "=", numero_documento).Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_client_car := orm.NewQuerys("vehiculos").Select().Where("numero_documento", "=", numero_documento).Exec(orm.Config_Query{Cloud: true}).All()
 	if len(_data_client_car) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))
 		return
@@ -96,7 +96,7 @@ func getClientVehiculoByPlaca(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	numero_placa := params["numero_placa"]
 
-	_data_client_car, _ := new(go_basic_orm.Querys).NewQuerys("vehiculos").Select().Where("numero_placa", "=", numero_placa).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
+	_data_client_car := orm.NewQuerys("vehiculos").Select().Where("numero_placa", "=", numero_placa).Exec(orm.Config_Query{Cloud: true}).One()
 	if len(_data_client_car) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontró este vehículo"))
 		return
@@ -165,9 +165,7 @@ func reAssignVehiculo(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 
-	_data_inscripcion, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select().Where("numero_placa", "=", numero_placa).Exec(go_basic_orm.Config_Query{Cloud: true}).All()
-
-	fmt.Println(_data_inscripcion)
+	_data_inscripcion := orm.NewQuerys("inscripciones").Select().Where("numero_placa", "=", numero_placa).Exec(orm.Config_Query{Cloud: true}).All()
 
 	var inscripciones_data map[string]interface{}
 	var inscripciones_detail_data map[string]interface{}

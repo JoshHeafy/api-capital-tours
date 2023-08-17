@@ -4,6 +4,7 @@ import (
 	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
+	"api-capital-tours/src/database/orm"
 	"api-capital-tours/src/libraries/date"
 	"api-capital-tours/src/libraries/library"
 	"api-capital-tours/src/middleware"
@@ -33,7 +34,7 @@ func getInscripciones(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
-	_data_inscripciones, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select().OrderBy("numero_flota").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_inscripciones := orm.NewQuerys("inscripciones").Select().OrderBy("numero_flota").Exec(orm.Config_Query{Cloud: true}).All()
 
 	if len(_data_inscripciones) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontro suscripciónes"))
@@ -49,7 +50,7 @@ func getLastInscripciones(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
-	_data_inscripciones, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select().OrderBy("TO_DATE(fecha_inicio, 'DD/MM/YYYY') DESC").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_inscripciones := orm.NewQuerys("inscripciones").Select().OrderBy("TO_DATE(fecha_inicio, 'DD/MM/YYYY') DESC").Exec(orm.Config_Query{Cloud: true}).All()
 
 	if len(_data_inscripciones) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontro suscripciónes"))
@@ -75,7 +76,7 @@ func getInscripcionByClient(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	numero_documento := params["numero_documento"]
 
-	_data_inscripciones, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select().Where("numero_documento", "=", numero_documento).OrderBy("numero_flota").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_inscripciones := orm.NewQuerys("inscripciones").Select().Where("numero_documento", "=", numero_documento).OrderBy("numero_flota").Exec(orm.Config_Query{Cloud: true}).All()
 	if len(_data_inscripciones) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))
 		return
@@ -96,7 +97,7 @@ func insertInscripciones(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_data_inscripcion, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select().Where("numero_placa", "=", data_request["numero_placa"]).Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_inscripcion := orm.NewQuerys("inscripciones").Select().Where("numero_placa", "=", data_request["numero_placa"]).Exec(orm.Config_Query{Cloud: true}).All()
 
 	if len(_data_inscripcion) >= 1 {
 		controller.ErrorsWaning(w, errors.New("este vehiculo ya tiene una suscripción"))
@@ -242,8 +243,8 @@ func consultaPeriodo(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	numero_placa := params["numero_placa"]
 
-	_data_inscripcion, err := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select("id_inscripcion,fecha_fin,fecha_pago,importe,estado,numero_flota,numero_placa,numero_documento").Where("numero_placa", "=", numero_placa).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
-	if err != nil {
+	_data_inscripcion := orm.NewQuerys("inscripciones").Select("id_inscripcion,fecha_fin,fecha_pago,importe,estado,numero_flota,numero_placa,numero_documento").Where("numero_placa", "=", numero_placa).Exec(orm.Config_Query{Cloud: true}).One()
+	if len(_data_inscripcion) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontró inscripción de este vehículo"))
 		return
 	}
@@ -252,8 +253,8 @@ func consultaPeriodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_data_detalle_comprobante, err_detail_comp := new(go_basic_orm.Querys).NewQuerys("detalle_comprobantes dc").Select("months || '/' || years as periodo").InnerJoin("comprobante_pago cp", "cp.id_comprobante_pago = dc.id_comprobante_pago").Where("cp.id_inscripcion", "=", _data_inscripcion["id_inscripcion"]).Exec(go_basic_orm.Config_Query{Cloud: true}).All()
-	if err_detail_comp != nil {
+	_data_detalle_comprobante := orm.NewQuerys("detalle_comprobantes dc").Select("months || '/' || years as periodo").InnerJoin("comprobante_pago cp", "cp.id_comprobante_pago = dc.id_comprobante_pago").Where("cp.id_inscripcion", "=", _data_inscripcion["id_inscripcion"]).Exec(orm.Config_Query{Cloud: true}).All()
+	if len(_data_detalle_comprobante) <= 0 {
 		controller.ErrorsWaning(w, errors.New("error al obtener comprobantes de pago"))
 		return
 	}

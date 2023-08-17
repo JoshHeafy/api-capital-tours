@@ -2,12 +2,12 @@ package routes
 
 import (
 	"api-capital-tours/src/controller"
+	"api-capital-tours/src/database/orm"
 	"encoding/json"
 	"errors"
 	"net/http"
 	"regexp"
 
-	"github.com/deybin/go_basic_orm"
 	"github.com/gorilla/mux"
 )
 
@@ -33,9 +33,9 @@ func generateAnalitycs(w http.ResponseWriter, r *http.Request) {
 
 	date_analytic := req_body["date"].(string)
 
-	_data_inscripciones, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select().Where("fecha_inicio", " = ", date_analytic).Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_inscripciones := orm.NewQuerys("inscripciones").Select().Where("fecha_inicio", " = ", date_analytic).Exec(orm.Config_Query{Cloud: true}).All()
 
-	_data_comprobantes, _ := new(go_basic_orm.Querys).NewQuerys("comprobante_pago").Select().Where("fecha_pago", " = ", date_analytic).Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_comprobantes := orm.NewQuerys("comprobante_pago").Select().Where("fecha_pago", " = ", date_analytic).Exec(orm.Config_Query{Cloud: true}).All()
 
 	tota_suscripciones := len(_data_inscripciones)
 	falt_suscripciones := 20 - tota_suscripciones

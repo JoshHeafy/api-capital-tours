@@ -4,6 +4,7 @@ import (
 	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
+	"api-capital-tours/src/database/orm"
 	"api-capital-tours/src/libraries/library"
 	"api-capital-tours/src/middleware"
 	"encoding/json"
@@ -52,7 +53,9 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_data_user, _ := new(go_basic_orm.Querys).NewQuerys("users_admin").Select().Where("username", "=", req_body["username"]).Exec(go_basic_orm.Config_Query{Cloud: false}).One()
+	// _data_user, _ := orm.NewQuerys("users_admin").Select().Where("username", "=", req_body["username"]).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
+
+	_data_user := orm.NewQuerys("users_admin").Select().Where("username", "=", req_body["username"]).Exec(orm.Config_Query{Cloud: true}).One()
 
 	if len(_data_user) <= 0 {
 		controller.ErrorsWaning(w, errors.New("usuario y/o contraseña incorrecto"))
@@ -161,7 +164,7 @@ func changePassUser(w http.ResponseWriter, r *http.Request) {
 
 	id_user := library.GetTokenKey(r, "us")
 
-	_data_user, _ := new(go_basic_orm.Querys).NewQuerys("users_admin").Select().Where("id_user_admin", "=", id_user).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
+	_data_user := orm.NewQuerys("users_admin").Select().Where("id_user_admin", "=", id_user).Exec(orm.Config_Query{Cloud: true}).One()
 
 	err = bcrypt.CompareHashAndPassword([]byte(_data_user["password"].(string)), []byte(data_request["password_old"].(string)))
 	if err != nil {
@@ -205,7 +208,7 @@ func getDatauser(w http.ResponseWriter, r *http.Request) {
 
 	id_user := library.GetTokenKey(r, "us")
 
-	_data_user, _ := new(go_basic_orm.Querys).NewQuerys("users_admin").Select().Where("id_user_admin", "=", id_user).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
+	_data_user := orm.NewQuerys("users_admin").Select().Where("id_user_admin", "=", id_user).Exec(orm.Config_Query{Cloud: true}).One()
 
 	if len(_data_user) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))

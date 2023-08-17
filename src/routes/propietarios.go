@@ -4,6 +4,7 @@ import (
 	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
+	"api-capital-tours/src/database/orm"
 	"api-capital-tours/src/middleware"
 	"encoding/json"
 	"errors"
@@ -27,8 +28,8 @@ func getAllPropietarios(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
-	_data_propietarios, err := new(go_basic_orm.Querys).NewQuerys("propietarios").Select().OrderBy("nombre_propietario").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
-	if err != nil {
+	_data_propietarios := orm.NewQuerys("propietarios").Select().OrderBy("nombre_propietario").Exec(orm.Config_Query{Cloud: true}).All()
+	if len(_data_propietarios) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontro propietarios"))
 	}
 
@@ -74,7 +75,7 @@ func getOnePropietarioByDocument(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	numero_documento := params["numero_documento"]
 
-	_data_propietario, _ := new(go_basic_orm.Querys).NewQuerys("propietarios").Select().Where("numero_documento", "=", numero_documento).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
+	_data_propietario := orm.NewQuerys("propietarios").Select().Where("numero_documento", "=", numero_documento).Exec(orm.Config_Query{Cloud: true}).One()
 
 	if len(_data_propietario) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))
@@ -129,7 +130,7 @@ func propietariosFilter(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	filtro := params["filtro"]
 
-	_data_propietarios, _ := new(go_basic_orm.Querys).NewQuerys("propietarios").Select().Like("numero_documento", "%"+filtro+"%").OrLike("nombre_propietario", "%"+filtro+"%").OrderBy("nombre_propietario").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_propietarios := orm.NewQuerys("propietarios").Select().Like("numero_documento", "%"+filtro+"%").OrLike("nombre_propietario", "%"+filtro+"%").OrderBy("nombre_propietario").Exec(orm.Config_Query{Cloud: true}).All()
 
 	response.Data["propietarios"] = _data_propietarios
 	w.WriteHeader(http.StatusOK)

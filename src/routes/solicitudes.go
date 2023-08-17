@@ -4,6 +4,7 @@ import (
 	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
+	"api-capital-tours/src/database/orm"
 	"api-capital-tours/src/middleware"
 	"encoding/json"
 	"errors"
@@ -25,9 +26,9 @@ func getSolicitudes(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
-	_data_solicitudes, err := new(go_basic_orm.Querys).NewQuerys("solicitudes").Select().OrderBy("fecha_solicitud").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_solicitudes := orm.NewQuerys("solicitudes").Select().OrderBy("fecha_solicitud").Exec(orm.Config_Query{Cloud: true}).All()
 
-	if err != nil {
+	if len(_data_solicitudes) <= 0 {
 		controller.ErrorsWaning(w, errors.New("error al obtener solicitudes"))
 		return
 	}

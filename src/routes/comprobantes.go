@@ -4,6 +4,7 @@ import (
 	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
+	"api-capital-tours/src/database/orm"
 	"api-capital-tours/src/libraries/date"
 	"api-capital-tours/src/middleware"
 	"encoding/json"
@@ -32,7 +33,7 @@ func getOneComprobante(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	numero_documento := params["numero_documento"]
 
-	_data_comprobantes, _ := new(go_basic_orm.Querys).NewQuerys("comprobante_pago").Select().Where("numero_documento", "=", numero_documento).Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_comprobantes := orm.NewQuerys("comprobante_pago").Select().Where("numero_documento", "=", numero_documento).Exec(orm.Config_Query{Cloud: true}).All()
 
 	if len(_data_comprobantes) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))
@@ -56,7 +57,7 @@ func getOneComprobanteDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_data_comprobante_detail, _ := new(go_basic_orm.Querys).NewQuerys("detalle_comprobantes").Select().Where("id_comprobante_pago", "=", id_comprobante_pago).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
+	_data_comprobante_detail := orm.NewQuerys("detalle_comprobantes").Select().Where("id_comprobante_pago", "=", id_comprobante_pago).Exec(orm.Config_Query{Cloud: true}).One()
 
 	if len(_data_comprobante_detail) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))
@@ -76,14 +77,14 @@ func insertComprobante(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id_inscripcion := params["id_inscripcion"]
 
-	_data_inscripciones, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select("id_inscripcion, numero_documento").Where("id_inscripcion", "=", id_inscripcion).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
+	_data_inscripciones := orm.NewQuerys("inscripciones").Select("id_inscripcion, numero_documento").Where("id_inscripcion", "=", id_inscripcion).Exec(orm.Config_Query{Cloud: true}).One()
 
 	if len(_data_inscripciones) <= 0 {
 		controller.ErrorsWaning(w, errors.New("id de suscripcion inválido"))
 		return
 	}
 
-	_comprobantes_number, _ := new(go_basic_orm.Querys).NewQuerys("comprobante_pago").Select("numero_comprobante").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_comprobantes_number := orm.NewQuerys("comprobante_pago").Select("numero_comprobante").Exec(orm.Config_Query{Cloud: true}).All()
 
 	var numeroComprobante string
 
