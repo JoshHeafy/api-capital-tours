@@ -6,7 +6,6 @@ import (
 	"api-capital-tours/src/middleware"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/deybin/go_basic_orm"
@@ -16,7 +15,7 @@ import (
 func RutasSolicitudes(r *mux.Router) {
 	s := r.PathPrefix("/solicitudes").Subrouter()
 	s.HandleFunc("/create", insertSolicitud).Methods("POST")
-	s.HandleFunc("/delete/{id_solicitud}", deleteSolicitud).Methods("DELETE")
+	s.Handle("/mark-as-read/{id_solicitud}", middleware.Autentication(http.HandlerFunc(markAsRead))).Methods("POST")
 	s.Handle("/list", middleware.Autentication(http.HandlerFunc(getSolicitudes))).Methods("GET")
 }
 
@@ -25,7 +24,7 @@ func getSolicitudes(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
-	_data_solicitudes, err := new(go_basic_orm.Querys).NewQuerys("solicitudes").Select().Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+	_data_solicitudes, err := new(go_basic_orm.Querys).NewQuerys("solicitudes").Select().OrderBy("fecha_solicitud").Exec(go_basic_orm.Config_Query{Cloud: true}).All()
 
 	if err != nil {
 		controller.ErrorsWaning(w, errors.New("error al obtener solicitudes"))
@@ -67,24 +66,22 @@ func insertSolicitud(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func deleteSolicitud(w http.ResponseWriter, r *http.Request) {
+func markAsRead(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
 	params := mux.Vars(r)
 	id_solicitud := params["id_solicitud"]
 
-	data_insert := append([]map[string]interface{}{}, map[string]interface{}{
-		"where": map[string]interface{}{
-			"id_solicitudes": id_solicitud,
-		},
+	var data_update []map[string]interface{}
+	data_update = append(data_update, map[string]interface{}{
+		"where": map[string]interface{}{"id_solicitud": id_solicitud},
+		"leido": uint64(1),
 	})
-
-	fmt.Println(data_insert)
 
 	schema, table := tables.Solicitudes_GetSchema()
 	solicitudes := go_basic_orm.SqlExec{}
-	err := solicitudes.New(data_insert, table).Delete(schema)
+	err := solicitudes.New(data_update, table).Update(schema)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return

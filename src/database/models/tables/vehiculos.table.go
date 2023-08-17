@@ -62,7 +62,7 @@ func Vehiculos_GetSchema() ([]go_basic_orm.Model, string) {
 		Type:        "string",
 		Strings: go_basic_orm.Strings{
 			Max:       7,
-			UpperCase: true,
+			LowerCase: true,
 		},
 	})
 	vehiculos = append(vehiculos, go_basic_orm.Model{ //numero_serie

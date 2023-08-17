@@ -80,7 +80,7 @@ func getInscripcionByClient(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Data["inscripciones-info"] = _data_inscripciones
+	response.Data["inscripciones_info"] = _data_inscripciones
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
@@ -277,15 +277,49 @@ func consultaPeriodo(w http.ResponseWriter, r *http.Request) {
 
 	importe := _data_inscripcion["importe"]
 
+	var new_date_fact string
+	loc, _ := time.LoadLocation("America/Bogota")
+	dia := datePago.Day()
+	if dia > 28 {
+		d := time.Date(yearNow, time.Month(monthNow), 1, 0, 0, 0, 0, loc)
+		f := date.GetLastDateOfMonth(d)
+		if f.Day() <= dia {
+			dia = f.Day()
+		}
+	}
+
+	new_date_fact = fmt.Sprintf("%02d/%02d/%d", dia, monthNow+1, yearNow)
+
 	for i := yearInit; i <= yearNow; i++ {
 		for e := monthInit; e <= month; e++ {
 			var estado uint64 = 1
-			if e == int64(monthNow) && yearInit == yearNow {
+
+			if e <= int64(dateNow.Month()) || i < yearNow {
+				var date_difference_list []string
+
+				date_difference_list = append(date_difference_list, fmt.Sprintf("%02d/%02d/%d",
+					dia, e, i), fmt.Sprintf("%02d/%02d/%d", dateNow.Day(), dateNow.Month(), dateNow.Year()))
+
+				diff := date.DiferenciaDate(date_difference_list...)
+
+				if diff < 0 {
+					estado = 2
+				}
+			}
+
+			if e == int64(monthNow) && i == yearNow {
+				dia := datePago.Day()
+				if dia > 28 {
+					d := time.Date(i, time.Month(e), 1, 0, 0, 0, 0, loc)
+					f := date.GetLastDateOfMonth(d)
+					if f.Day() <= dia {
+						dia = f.Day()
+					}
+				}
+				new_date_fact = fmt.Sprintf("%02d/%02d/%d", dia, e, i)
 				estado = 0
 			}
-			if e < int64(monthNow) || yearInit < yearNow {
-				estado = 2
-			}
+
 			periodo := fmt.Sprintf("%d/%d", e, i)
 			if library.IndexOf_String(newFact, periodo) == -1 {
 				dataPagos = append(dataPagos, map[string]interface{}{
@@ -293,6 +327,7 @@ func consultaPeriodo(w http.ResponseWriter, r *http.Request) {
 					"months":  e,
 					"importe": importe,
 					"estado":  estado, // 0: Cerca, 1: Ok, 2: Mora
+
 				})
 			}
 		}
@@ -300,7 +335,10 @@ func consultaPeriodo(w http.ResponseWriter, r *http.Request) {
 		monthInit = 1
 	}
 
-	response.Data["periodo-inscripcion"] = dataPagos
+	response.Data["periodo_inscripcion"] = dataPagos
+	response.Data["status_pago"] = map[string]interface{}{
+		"proximo_pago": new_date_fact,
+	}
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }

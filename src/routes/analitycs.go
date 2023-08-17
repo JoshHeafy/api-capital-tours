@@ -49,6 +49,16 @@ func generateAnalitycs(w http.ResponseWriter, r *http.Request) {
 	tota_pagos := len(_data_comprobantes)
 	falt_pagos := 150 - tota_pagos
 
+	if falt_suscripciones < 0 {
+		falt_suscripciones = 0
+	}
+	if falt_ingresos < 0 {
+		falt_ingresos = 0
+	}
+	if falt_pagos < 0 {
+		falt_pagos = 0
+	}
+
 	analyticsSuscripciones := map[string]interface{}{
 		"total":    tota_suscripciones,
 		"faltante": falt_suscripciones,

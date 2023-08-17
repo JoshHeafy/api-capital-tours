@@ -87,14 +87,14 @@ CREATE TABLE
         CONSTRAINT fk_detalle_comprobantes_comprobante_pago FOREIGN KEY (id_comprobante_pago) REFERENCES comprobante_pago (id_comprobante_pago)
     );
 
-CREATE TABLE
-    permisos (
-        id_permiso VARCHAR(36) NOT NULL PRIMARY KEY,
-        fecha_inicio VARCHAR(10) NOT NULL,
-        fecha_fin VARCHAR(10) NOT NULL,
-        id_inscripcion VARCHAR(36) NOT NULL,
-        CONSTRAINT fk_permisos_inscripciones FOREIGN KEY (id_inscripcion) REFERENCES inscripciones (id_inscripcion)
-    );
+-- CREATE TABLE
+--     permisos (
+--         id_permiso VARCHAR(36) NOT NULL PRIMARY KEY,
+--         fecha_inicio VARCHAR(10) NOT NULL,
+--         fecha_fin VARCHAR(10) NOT NULL,
+--         id_inscripcion VARCHAR(36) NOT NULL,
+--         CONSTRAINT fk_permisos_inscripciones FOREIGN KEY (id_inscripcion) REFERENCES inscripciones (id_inscripcion)
+--     );
 
 --web
 CREATE TABLE
@@ -104,7 +104,9 @@ CREATE TABLE
         email VARCHAR(100) NOT NULL,
         telefono VARCHAR(9) NOT NULL,
         asunto VARCHAR(150) NOT NULL,
-        mensaje VARCHAR(500) NOT NULL
+        mensaje VARCHAR(500) NOT NULL,
+        fecha_solicitud TIMESTAMP DEFAULT NOW (),
+        leido INT NOT NULL DEFAULT 0
     );
 
 --movil

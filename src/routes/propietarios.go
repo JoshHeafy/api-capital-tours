@@ -80,7 +80,7 @@ func getOnePropietarioByDocument(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Data["propietario-info"] = _data_propietario
+	response.Data["propietario_info"] = _data_propietario
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)

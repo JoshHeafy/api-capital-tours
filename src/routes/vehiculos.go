@@ -6,6 +6,7 @@ import (
 	"api-capital-tours/src/middleware"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/deybin/go_basic_orm"
@@ -81,7 +82,7 @@ func getClientVehiculos(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Data["vehiculos-info"] = _data_client_car
+	response.Data["vehiculos_info"] = _data_client_car
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
@@ -100,7 +101,7 @@ func getClientVehiculoByPlaca(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Data["vehiculo-info"] = _data_client_car
+	response.Data["vehiculo_info"] = _data_client_car
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
@@ -153,17 +154,45 @@ func reAssignVehiculo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data_update []map[string]interface{}
-	data_update = append(data_update, map[string]interface{}{
+	var data_update_vehiculo []map[string]interface{}
+	var data_update_inscripcion []map[string]interface{}
+	var data_update_inscripcion_detail []map[string]interface{}
+	data_update_vehiculo = append(data_update_vehiculo, map[string]interface{}{
 		"numero_documento": data_request["numero_documento"],
 		"where": map[string]interface{}{
 			"numero_placa": numero_placa,
 		},
 	})
 
+	_data_inscripcion, _ := new(go_basic_orm.Querys).NewQuerys("inscripciones").Select().Where("numero_placa", "=", numero_placa).Exec(go_basic_orm.Config_Query{Cloud: true}).All()
+
+	fmt.Println(_data_inscripcion)
+
+	var inscripciones_data map[string]interface{}
+	var inscripciones_detail_data map[string]interface{}
+
+	if len(_data_inscripcion) > 0 {
+		data_update_inscripcion = append(data_update_inscripcion, map[string]interface{}{
+			"numero_documento": data_request["numero_documento"],
+			"where": map[string]interface{}{
+				"numero_placa": numero_placa,
+			},
+		})
+
+		data_update_inscripcion_detail = append(data_update_inscripcion_detail, map[string]interface{}{
+			"numero_documento": data_request["numero_documento"],
+			"where": map[string]interface{}{
+				"id_inscripcion": _data_inscripcion[0]["id_inscripcion"],
+			},
+		})
+
+		inscripciones_data = reAssingInscripcionInsert(w, r, data_update_inscripcion)
+		inscripciones_detail_data = reAssingInscripcionDetailInsert(w, r, data_update_inscripcion_detail)
+	}
+
 	schema, table := tables.Vehiculos_GetSchema()
 	vehiculos := go_basic_orm.SqlExec{}
-	err = vehiculos.New(data_update, table).Update(schema)
+	err = vehiculos.New(data_update_vehiculo, table).Update(schema)
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -175,7 +204,45 @@ func reAssignVehiculo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Data = vehiculos.Data[0]
+	response.Data["update_vehiculo"] = vehiculos.Data[0]
+	response.Data["update_ins"] = inscripciones_data
+	response.Data["update_ins_det"] = inscripciones_detail_data
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
+}
+
+func reAssingInscripcionInsert(w http.ResponseWriter, r *http.Request, data []map[string]interface{}) map[string]interface{} {
+	schemaIns, tableIns := tables.Inscripciones_GetSchema()
+	inscripciones := go_basic_orm.SqlExec{}
+	errIns := inscripciones.New(data, tableIns).Update(schemaIns)
+	if errIns != nil {
+		controller.ErrorsWaning(w, errIns)
+		return map[string]interface{}{}
+	}
+
+	errIns = inscripciones.Exec("capital_tours")
+	if errIns != nil {
+		controller.ErrorsWaning(w, errIns)
+		return map[string]interface{}{}
+	}
+
+	return inscripciones.Data[0]
+}
+
+func reAssingInscripcionDetailInsert(w http.ResponseWriter, r *http.Request, data []map[string]interface{}) map[string]interface{} {
+	schema, table := tables.Detalleinscripciones_GetSchema()
+	inscripciones_detail := go_basic_orm.SqlExec{}
+	err := inscripciones_detail.New(data, table).Update(schema)
+	if err != nil {
+		controller.ErrorsWaning(w, err)
+		return map[string]interface{}{}
+	}
+
+	err = inscripciones_detail.Exec("capital_tours")
+	if err != nil {
+		controller.ErrorsWaning(w, err)
+		return map[string]interface{}{}
+	}
+
+	return inscripciones_detail.Data[0]
 }

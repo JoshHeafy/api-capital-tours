@@ -9,9 +9,9 @@ func Solicitudes_GetSchema() ([]go_basic_orm.Model, string) {
 	var solicitudes []go_basic_orm.Model
 	tableName := "solicitudes"
 
-	solicitudes = append(solicitudes, go_basic_orm.Model{ //id_solicitudes
-		Name:        "id_solicitudes",
-		Description: "id_solicitudes",
+	solicitudes = append(solicitudes, go_basic_orm.Model{ //id_solicitud
+		Name:        "id_solicitud",
+		Description: "id_solicitud",
 		Default:     uuid.New().String(),
 		Important:   true,
 		Required:    true,
@@ -69,6 +69,13 @@ func Solicitudes_GetSchema() ([]go_basic_orm.Model, string) {
 			Max:       500,
 			LowerCase: true,
 		},
+	})
+	solicitudes = append(solicitudes, go_basic_orm.Model{ //leido
+		Name:        "leido",
+		Description: "leido",
+		Type:        "uint64",
+		Default:     0,
+		Update:      true,
 	})
 	return solicitudes, tableName
 }

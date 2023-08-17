@@ -1,23 +1,36 @@
 package library
 
 import (
-	"api-capital-tours/src/controller"
+	"api-capital-tours/src/auth"
 	"fmt"
+	"net/http"
 	"reflect"
 	"strings"
 )
 
-// typeof
-// recibe un valor interface que no se reconoce su tipo y devuelve un string
-func GetSession_key(SessionID string, key string) interface{} {
-	data, err := controller.SessionMgr.GetSessionVal(SessionID, key)
-	if !err {
-		fmt.Println("Error session ID:"+SessionID+" key:("+key+"):", err)
-		fmt.Println("lista:", controller.SessionMgr.GetSessionIDList())
-		return ""
+func GetTokenKey(r *http.Request, key string) interface{} {
+	token := r.Header.Get("Access-Token")
+	if token == "" {
+		fmt.Println("Error al obtener información de la session")
+		return nil
 	}
-	return data
+	data, err := auth.ValidateToken(token)
+	if err != nil {
+		fmt.Println("Session a expirado")
+		return nil
+	}
+	map_data := map[string]interface{}{
+		"email": data.Email,
+		"us":    data.IdUser,
+	}
+	value := map_data[key]
+	if value == nil {
+		fmt.Println("No se encontró la key de la session")
+		return nil
+	}
+	return value
 }
+
 func InterfaceToString(params ...interface{}) string {
 	typeValue := reflect.TypeOf(params[0]).String()
 	value := params[0]

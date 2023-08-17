@@ -38,7 +38,7 @@ func getOneComprobante(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Data["comprobantes-info"] = _data_comprobantes
+	response.Data["comprobantes_info"] = _data_comprobantes
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
@@ -55,14 +55,14 @@ func getOneComprobanteDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_data_comprobante_detail, _ := new(go_basic_orm.Querys).NewQuerys("detalle_comprobantes dc").Select().InnerJoin("comprobante_pago cp", "dc.id_comprobante_pago = cp.id_comprobante_pago").Exec(go_basic_orm.Config_Query{Cloud: true}).One()
+	_data_comprobante_detail, _ := new(go_basic_orm.Querys).NewQuerys("detalle_comprobantes").Select().Where("id_comprobante_pago", "=", id_comprobante_pago).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
 
 	if len(_data_comprobante_detail) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))
 		return
 	}
 
-	response.Data["comprobate_detail"] = _data_comprobante_detail
+	response.Data["comprobante_detail"] = _data_comprobante_detail
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
@@ -126,8 +126,8 @@ func insertComprobante(w http.ResponseWriter, r *http.Request) {
 	data_insert["id_inscripcion"] = _data_inscripciones["id_inscripcion"]
 	data_insert["numero_serie"] = string("0001") //por ahora solo una sucursal
 	data_insert["fecha_pago"] = date.GetFechaLocationString()
-	data_insert["igv"] = float64(0.18)
-	data_insert["total"] = data_request["importe"].(float64) + (data_insert["igv"].(float64) * data_request["importe"].(float64)) - data_request["descuento"].(float64)
+	data_insert["igv"] = float64(0.18 * data_request["importe"].(float64))
+	data_insert["total"] = data_request["importe"].(float64) - data_insert["igv"].(float64) - data_request["descuento"].(float64)
 
 	//insert a comprobante_pago
 	schema_comprobante, table := tables.Comprobante_GetSchema()

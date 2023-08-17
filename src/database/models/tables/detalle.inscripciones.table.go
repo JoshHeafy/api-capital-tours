@@ -13,7 +13,6 @@ func Detalleinscripciones_GetSchema() ([]go_basic_orm.Model, string) {
 		Description: "id_detalle_inscripcion",
 		Default:     uuid.New().String(),
 		Required:    true,
-		Important:   true,
 		Type:        "string",
 		Strings:     go_basic_orm.Strings{},
 	})
@@ -59,6 +58,7 @@ func Detalleinscripciones_GetSchema() ([]go_basic_orm.Model, string) {
 		Name:        "numero_documento",
 		Description: "numero_documento",
 		Required:    true,
+		Update:      true,
 		Type:        "string",
 		Strings: go_basic_orm.Strings{
 			Max: 11,
@@ -80,6 +80,7 @@ func Detalleinscripciones_GetSchema() ([]go_basic_orm.Model, string) {
 		Name:        "id_inscripcion",
 		Description: "id_inscripcion",
 		Required:    true,
+		Important:   true,
 		Type:        "string",
 		Strings:     go_basic_orm.Strings{},
 	})
