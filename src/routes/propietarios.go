@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
 	"api-capital-tours/src/middleware"
@@ -55,7 +56,7 @@ func insertPropietarios(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = propietarios.Exec("capital_tours")
+	err = propietarios.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -110,7 +111,7 @@ func updatePropietario(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = propietarios.Exec("capital_tours")
+	err = propietarios.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return

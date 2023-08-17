@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
 	"api-capital-tours/src/libraries/date"
@@ -138,7 +139,7 @@ func insertComprobante(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = comprobantes.Exec("capital_tours")
+	err = comprobantes.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -161,7 +162,7 @@ func insertComprobante(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = comprobantes_detalle.Exec("capital_tours")
+	err = comprobantes_detalle.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return

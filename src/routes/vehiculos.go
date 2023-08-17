@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
 	"api-capital-tours/src/middleware"
@@ -58,7 +59,7 @@ func insertVehiculos(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = vehiculos.Exec("capital_tours")
+	err = vehiculos.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -131,7 +132,7 @@ func updateVehiculo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = vehiculos.Exec("capital_tours")
+	err = vehiculos.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -198,7 +199,7 @@ func reAssignVehiculo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = vehiculos.Exec("capital_tours")
+	err = vehiculos.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -220,7 +221,7 @@ func reAssingInscripcionInsert(w http.ResponseWriter, r *http.Request, data []ma
 		return map[string]interface{}{}
 	}
 
-	errIns = inscripciones.Exec("capital_tours")
+	errIns = inscripciones.Exec(auth.GetDBName())
 	if errIns != nil {
 		controller.ErrorsWaning(w, errIns)
 		return map[string]interface{}{}
@@ -238,7 +239,7 @@ func reAssingInscripcionDetailInsert(w http.ResponseWriter, r *http.Request, dat
 		return map[string]interface{}{}
 	}
 
-	err = inscripciones_detail.Exec("capital_tours")
+	err = inscripciones_detail.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return map[string]interface{}{}

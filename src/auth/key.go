@@ -24,3 +24,12 @@ func GetKey_PrivateCrypto() []byte {
 	key := os.Getenv("ENV_KEY_CRYPTO")
 	return []byte(key)
 }
+
+func GetDBName() string {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("error configuración de variables de entorno")
+	}
+	key := os.Getenv("ENV_DDBB_DATABASE")
+	return string(key)
+}

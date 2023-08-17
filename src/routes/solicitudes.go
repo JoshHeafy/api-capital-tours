@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
 	"api-capital-tours/src/middleware"
@@ -55,7 +56,7 @@ func insertSolicitud(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = solicitudes.Exec("capital_tours")
+	err = solicitudes.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -87,7 +88,7 @@ func markAsRead(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = solicitudes.Exec("capital_tours")
+	err = solicitudes.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return

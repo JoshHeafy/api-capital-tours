@@ -130,7 +130,7 @@ func updateUserAdmin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = propietarios.Exec("capital_tours")
+	err = propietarios.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -189,7 +189,7 @@ func changePassUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	errUpd = users.Exec("capital_tours")
+	errUpd = users.Exec(auth.GetDBName())
 	if errUpd != nil {
 		controller.ErrorsWaning(w, errUpd)
 		return

@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"api-capital-tours/src/auth"
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
 	"api-capital-tours/src/libraries/date"
@@ -123,7 +124,7 @@ func insertInscripciones(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = inscripciones.Exec("capital_tours")
+	err = inscripciones.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -144,7 +145,7 @@ func insertInscripciones(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = inscripciones_detail.Exec("capital_tours")
+	err = inscripciones_detail.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -189,7 +190,7 @@ func darAlta(w http.ResponseWriter, r *http.Request) {
 		controller.ErrorsWaning(w, errors.New(err.Error()))
 		return
 	}
-	err = servicio.Exec("capital_tours")
+	err = servicio.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
@@ -223,7 +224,7 @@ func darBaja(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = servicio.Exec("capital_tours")
+	err = servicio.Exec(auth.GetDBName())
 	if err != nil {
 		controller.ErrorsWaning(w, err)
 		return
