@@ -30,6 +30,6 @@ func GetDBName() string {
 	if err != nil {
 		log.Fatal("error configuración de variables de entorno")
 	}
-	key := os.Getenv("ENV_DB_GLOBAL")
+	key := os.Getenv("ENV_DDBB_DATABASE")
 	return string(key)
 }
