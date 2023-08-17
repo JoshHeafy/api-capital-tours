@@ -29,6 +29,7 @@ func getAllPropietarios(w http.ResponseWriter, r *http.Request) {
 	_data_propietarios := orm.NewQuerys("propietarios").Select().OrderBy("nombre_propietario").Exec(orm.Config_Query{Cloud: true}).All()
 	if len(_data_propietarios) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontro propietarios"))
+		return
 	}
 
 	response.Data["propietarios"] = _data_propietarios

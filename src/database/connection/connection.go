@@ -20,8 +20,8 @@ func Connection() *sql.DB {
 	password := os.Getenv("ENV_DDBB_PASSWORD")
 	port := os.Getenv("ENV_DDBB_PORT")
 	database := os.Getenv("ENV_DDBB_DATABASE")
-	// fmt.Println("database: ", database)
-	connection_string := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", server, port, user, password, database)
+
+	connection_string := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=verify-full", server, port, user, password, database)
 	db, err := sql.Open("postgres", connection_string)
 	if err != nil {
 		log.Fatal("Error connection: ", err.Error())
