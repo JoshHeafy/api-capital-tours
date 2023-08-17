@@ -52,7 +52,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_data_user, _ := new(go_basic_orm.Querys).NewQuerys("users_admin").Select().Where("username", "=", req_body["username"]).Exec(go_basic_orm.Config_Query{Cloud: true}).One()
+	_data_user, _ := new(go_basic_orm.Querys).NewQuerys("users_admin").Select().Where("username", "=", req_body["username"]).Exec(go_basic_orm.Config_Query{Cloud: false}).One()
 
 	if len(_data_user) <= 0 {
 		controller.ErrorsWaning(w, errors.New("usuario y/o contraseña incorrecto"))
