@@ -44,9 +44,9 @@ func ConnectionCloud() *sql.DB {
 	database := os.Getenv("ENV_DDBB_DATABASE")
 	port := os.Getenv("ENV_DDBB_PORT")
 
-	// connection_string := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", server, port, user, password, database)
+	connection_string := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", server, port, user, password, database)
 
-	connection_string := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=verify-full", server, port, user, password, database)
+	// connection_string := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=verify-full", server, port, user, password, database)
 
 	db, err := sql.Open("postgres", connection_string)
 	if err != nil {
