@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -20,8 +21,16 @@ func Connection() *sql.DB {
 	password := os.Getenv("ENV_DDBB_PASSWORD")
 	port := os.Getenv("ENV_DDBB_PORT")
 	database := os.Getenv("ENV_DDBB_DATABASE")
+	sslconnection := os.Getenv("ENV_SSL_CONNECTION")
 
-	connection_string := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=verify-full", server, port, user, password, database)
+	var sslmode string
+	if strings.ToLower(sslconnection) == "true" {
+		sslmode = "verify-full"
+	} else {
+		sslmode = "disable"
+	}
+
+	connection_string := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", server, port, user, password, database, sslmode)
 	db, err := sql.Open("postgres", connection_string)
 	if err != nil {
 		log.Fatal("Error connection: ", err.Error())
@@ -43,10 +52,16 @@ func ConnectionCloud() *sql.DB {
 	password := os.Getenv("ENV_DDBB_PASSWORD")
 	database := os.Getenv("ENV_DDBB_DATABASE")
 	port := os.Getenv("ENV_DDBB_PORT")
+	sslconnection := os.Getenv("ENV_SSL_CONNECTION")
 
-	connection_string := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", server, port, user, password, database)
+	var sslmode string
+	if strings.ToLower(sslconnection) == "true" {
+		sslmode = "verify-full"
+	} else {
+		sslmode = "disable"
+	}
 
-	// connection_string := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=verify-full", server, port, user, password, database)
+	connection_string := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", server, port, user, password, database, sslmode)
 
 	db, err := sql.Open("postgres", connection_string)
 	if err != nil {

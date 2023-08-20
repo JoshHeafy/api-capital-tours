@@ -56,7 +56,7 @@ func Solicitudes_GetSchema() ([]models.Base, string) {
 		Required:    true,
 		Type:        "string",
 		Strings: models.Strings{
-			Min:       5,
+			Min:       4,
 			Max:       150,
 			LowerCase: true,
 		},

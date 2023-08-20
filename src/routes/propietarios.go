@@ -4,10 +4,14 @@ import (
 	"api-capital-tours/src/controller"
 	"api-capital-tours/src/database/models/tables"
 	"api-capital-tours/src/database/orm"
+	"api-capital-tours/src/libraries/date"
+	"api-capital-tours/src/libraries/library"
 	"api-capital-tours/src/middleware"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -20,6 +24,7 @@ func RutasPropietarios(r *mux.Router) {
 	s.Handle("/info-prop/{numero_documento}", middleware.Autentication(http.HandlerFunc(getOnePropietarioByDocument))).Methods("GET")
 	s.Handle("/update/{numero_documento}", middleware.Autentication(http.HandlerFunc(updatePropietario))).Methods("PUT")
 	s.Handle("/filter/{filtro}", middleware.Autentication(http.HandlerFunc(propietariosFilter))).Methods("GET")
+	s.HandleFunc("/consulta-web/{numero_placa}", consultaWeb).Methods("GET")
 }
 
 func getAllPropietarios(w http.ResponseWriter, r *http.Request) {
@@ -132,6 +137,125 @@ func propietariosFilter(w http.ResponseWriter, r *http.Request) {
 	_data_propietarios := orm.NewQuerys("propietarios").Select().Like("numero_documento", "%"+filtro+"%").OrLike("nombre_propietario", "%"+filtro+"%").OrderBy("nombre_propietario").Exec(orm.Config_Query{Cloud: true}).All()
 
 	response.Data["propietarios"] = _data_propietarios
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func consultaWeb(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	response := controller.NewResponseManager()
+
+	params := mux.Vars(r)
+	numero_placa := params["numero_placa"]
+
+	_data_inscripcion := orm.NewQuerys("inscripciones").Select("id_inscripcion,fecha_fin,fecha_pago,importe,estado,numero_flota,numero_placa,numero_documento").Where("numero_placa", "=", numero_placa).Exec(orm.Config_Query{Cloud: true}).One()
+	if len(_data_inscripcion) <= 0 {
+		controller.ErrorsWaning(w, errors.New("número de placa no válido o sin suscripción"))
+		return
+	}
+	if _data_inscripcion["fecha_fin"] != nil {
+		controller.ErrorsSuccess(w, errors.New("su suscripción esta inactiva"))
+		return
+	}
+
+	_data_propietario := orm.NewQuerys("propietarios").Select().Where("numero_documento", "=", _data_inscripcion["numero_documento"].(string)).Exec(orm.Config_Query{Cloud: true}).One()
+
+	if len(_data_propietario) <= 0 {
+		controller.ErrorsWaning(w, errors.New("o oh!, no pudimos obtener su información"))
+		return
+	}
+
+	_data_detalle_comprobante := orm.NewQuerys("detalle_comprobantes dc").Select("months || '/' || years as periodo").InnerJoin("comprobante_pago cp", "cp.id_comprobante_pago = dc.id_comprobante_pago").Where("cp.id_inscripcion", "=", _data_inscripcion["id_inscripcion"]).Exec(orm.Config_Query{Cloud: true}).All()
+
+	var newFact []string
+	for _, v := range _data_detalle_comprobante {
+		if v["periodo"] != nil {
+			newFact = append(newFact, v["periodo"].(string))
+		}
+	}
+
+	datePago := date.GetDate(_data_inscripcion["fecha_pago"].(string))
+	dateNow := date.GetDateLocation()
+
+	monthInit := int64(datePago.Month())
+	yearInit := datePago.Year()
+	yearNow := dateNow.Year()
+	monthNow := dateNow.Month()
+
+	var dataPagos []map[string]interface{}
+	var month = int64(12)
+
+	importe := _data_inscripcion["importe"]
+
+	var new_date_fact string
+	loc, _ := time.LoadLocation("America/Bogota")
+	dia := datePago.Day()
+	if dia > 28 {
+		d := time.Date(yearNow, time.Month(monthNow), 1, 0, 0, 0, 0, loc)
+		f := date.GetLastDateOfMonth(d)
+		if f.Day() <= dia {
+			dia = f.Day()
+		}
+	}
+
+	new_date_fact = fmt.Sprintf("%02d/%02d/%d", dia, monthNow+1, yearNow)
+
+	for i := yearInit; i <= yearNow; i++ {
+		for e := monthInit; e <= month; e++ {
+			var estado uint64 = 1
+
+			if e <= int64(dateNow.Month()) || i < yearNow {
+				var date_difference_list []string
+
+				date_difference_list = append(date_difference_list, fmt.Sprintf("%02d/%02d/%d",
+					dia, e, i), fmt.Sprintf("%02d/%02d/%d", dateNow.Day(), dateNow.Month(), dateNow.Year()))
+
+				diff := date.DiferenciaDate(date_difference_list...)
+
+				if diff < 0 {
+					estado = 2
+				}
+			}
+
+			if e == int64(monthNow) && i == yearNow {
+				dia := datePago.Day()
+				if dia > 28 {
+					d := time.Date(i, time.Month(e), 1, 0, 0, 0, 0, loc)
+					f := date.GetLastDateOfMonth(d)
+					if f.Day() <= dia {
+						dia = f.Day()
+					}
+				}
+				new_date_fact = fmt.Sprintf("%02d/%02d/%d", dia, e, i)
+				estado = 0
+			}
+
+			periodo := fmt.Sprintf("%d/%d", e, i)
+			if library.IndexOf_String(newFact, periodo) == -1 {
+				dataPagos = append(dataPagos, map[string]interface{}{
+					"years":   i,
+					"months":  e,
+					"importe": importe,
+					"estado":  estado, // 0: Cerca, 1: Ok, 2: Mora
+
+				})
+			}
+		}
+
+		monthInit = 1
+	}
+
+	delete(_data_inscripcion, "id_inscripcion")
+	delete(_data_inscripcion, "numero_documento")
+	delete(_data_inscripcion, "fecha_pago")
+	delete(_data_inscripcion, "fecha_fin")
+
+	response.Data["periodo_inscripcion"] = dataPagos
+	response.Data["inscripcion"] = _data_inscripcion
+	response.Data["propietario"] = _data_propietario
+	response.Data["status_pago"] = map[string]interface{}{
+		"proximo_pago": new_date_fact,
+	}
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }

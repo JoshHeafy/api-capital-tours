@@ -20,7 +20,6 @@ func RutasSolicitudes(r *mux.Router) {
 }
 
 func getSolicitudes(w http.ResponseWriter, r *http.Request) {
-
 	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
