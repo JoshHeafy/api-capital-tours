@@ -132,6 +132,16 @@ CREATE TABLE
         CONSTRAINT unique_username_admin UNIQUE (username)
     );
 
+CREATE TABLE
+    locations (
+        id_location VARCHAR(36) NOT NULL PRIMARY KEY,
+        nombre VARCHAR(150) NOT NULL,
+        latitud double precision,
+        longitud double precision,
+        numero_placa VARCHAR(7) NOT NULL,
+        numero_flota VARCHAR(7) NOT NULL
+    );
+
 ------------------------------------------------------------------------
 -- -- Insertar propietarios
 -- INSERT INTO

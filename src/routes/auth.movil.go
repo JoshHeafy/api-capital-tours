@@ -7,7 +7,6 @@ import (
 	"api-capital-tours/src/database/orm"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -36,8 +35,6 @@ func loginMovil(w http.ResponseWriter, r *http.Request) {
 
 	_data_user := orm.NewQuerys("users_mobile").Select().Where("email", "=", req_body["email"]).Exec(orm.Config_Query{Cloud: true}).One()
 
-	fmt.Println(_data_user)
-
 	if len(_data_user) <= 0 {
 		controller.ErrorsWaning(w, errors.New("usuario y/o contraseña incorrecto"))
 		return
@@ -55,9 +52,7 @@ func loginMovil(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_data_propietario := orm.NewQuerys("propietarios p").Select(
-		"p.numero_documento, p.nombre_propietario, p.direccion, p.referencia, p.tipo_documento, p.telefono, p.email",
-	).InnerJoin("vehiculos v", "p.numero_documento = v.numero_documento").Where("v.numero_placa", "=", _data_user["numero_placa"]).Exec(orm.Config_Query{Cloud: true}).One()
+	_data_propietario := orm.NewQuerys("propietarios p").Select("p.numero_documento, p.nombre_propietario, p.direccion, p.referencia, p.tipo_documento, p.telefono, p.email").InnerJoin("vehiculos v", "p.numero_documento = v.numero_documento").Where("v.numero_placa", "=", _data_user["numero_placa"]).Exec(orm.Config_Query{Cloud: true}).One()
 
 	returnData := _data_user
 	delete(returnData, "password")
