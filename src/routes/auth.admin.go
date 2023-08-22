@@ -122,7 +122,7 @@ func updateUserAdmin(w http.ResponseWriter, r *http.Request) {
 	var data_update []map[string]interface{}
 	data_update = append(data_update, data_request)
 
-	schema, table := tables.UserAdmin_GetSchema()
+	schema, table := tables.UsersAdmin_GetSchema()
 	propietarios := orm.SqlExec{}
 	err = propietarios.New(data_update, table).Update(schema)
 	if err != nil {
@@ -181,7 +181,7 @@ func changePassUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	schema, table := tables.UserAdmin_GetSchema()
+	schema, table := tables.UsersAdmin_GetSchema()
 	users := orm.SqlExec{}
 	errUpd := users.New(UpdatePassword, table).Update(schema)
 	if errUpd != nil {

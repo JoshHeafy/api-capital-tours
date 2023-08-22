@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func UserAdmin_GetSchema() ([]models.Base, string) {
+func UsersAdmin_GetSchema() ([]models.Base, string) {
 	var users []models.Base
 	tableName := "users_" + "admin"
 	users = append(users, models.Base{ //id_user_admin

@@ -17,6 +17,7 @@ func main() {
 	r.HandleFunc("/", HomeHandler)
 
 	routes.RutasAuthAdmin(r)
+	routes.RutasAuthMovil(r)
 	routes.RutasSolicitudes(r)
 	routes.RutasPropietarios(r)
 	routes.RutasVehiculos(r)
