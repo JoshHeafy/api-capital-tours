@@ -5,8 +5,25 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"strconv"
 	"strings"
 )
+
+// Tipo de codigo: n° serie, n° comprobante
+type CodigoType int
+
+const (
+	Comprobante CodigoType = iota
+	Serie
+	// otros tipos
+)
+
+type Codigo struct {
+	Tipo  CodigoType
+	Valor string
+}
+
+// end struct codigo_type
 
 func GetTokenKey(r *http.Request, key string) interface{} {
 	token := r.Header.Get("Access-Token")
@@ -74,4 +91,29 @@ func IndexOf_String_Map(arreglo []map[string]interface{}, key, search string) in
 	}
 	// -1 porque no existe
 	return -1
+}
+
+func GenerateCodigo(input Codigo) (string, error) {
+	len_input := len(input.Valor)
+	input.Valor = strings.TrimLeft(input.Valor, "0")
+
+	if input.Valor == "" {
+		if input.Tipo == Comprobante {
+			input.Valor = "0000000001"
+			return input.Valor, nil
+		} else if input.Tipo == Serie {
+			input.Valor = "0001"
+			return input.Valor, nil
+		}
+	}
+
+	numero, err := strconv.Atoi(input.Valor)
+	if err != nil {
+		return "", err
+	}
+
+	numero++
+	nuevoString := fmt.Sprintf("%0"+strconv.Itoa(len_input)+"d", numero)
+
+	return nuevoString, nil
 }

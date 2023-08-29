@@ -48,7 +48,7 @@ func Inscripciones_GetSchema() ([]models.Base, string) {
 		Update:      true,
 		Type:        "float64",
 		Float: models.Floats{
-			Menor: 49,
+			Menor: 25,
 		},
 	})
 	inscripciones = append(inscripciones, models.Base{ //fecha_pago

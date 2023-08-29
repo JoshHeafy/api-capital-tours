@@ -251,12 +251,16 @@ func consultaPeriodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_data_detalle_comprobante := orm.NewQuerys("detalle_comprobantes dc").Select("months || '/' || years as periodo").InnerJoin("comprobante_pago cp", "cp.id_comprobante_pago = dc.id_comprobante_pago").Where("cp.id_inscripcion", "=", _data_inscripcion["id_inscripcion"]).Exec(orm.Config_Query{Cloud: true}).All()
+	_data_detalle_comprobante := orm.NewQuerys("detalle_comprobantes dc").Select("months || '/' || years as periodo, cp.importe").InnerJoin("comprobante_pago cp", "cp.id_comprobante_pago = dc.id_comprobante_pago").Where("cp.id_inscripcion", "=", _data_inscripcion["id_inscripcion"]).Exec(orm.Config_Query{Cloud: true}).All()
 
+	first_inscripcion := true
 	var newFact []string
 	for _, v := range _data_detalle_comprobante {
 		if v["periodo"] != nil {
 			newFact = append(newFact, v["periodo"].(string))
+		}
+		if v["importe"] == 150 {
+			first_inscripcion = false
 		}
 	}
 
@@ -317,13 +321,23 @@ func consultaPeriodo(w http.ResponseWriter, r *http.Request) {
 			}
 
 			periodo := fmt.Sprintf("%d/%d", e, i)
+
+			if len(newFact) <= 0 && first_inscripcion {
+				dataPagos = append(dataPagos, map[string]interface{}{
+					"years":   yearNow,
+					"months":  monthNow,
+					"importe": 150,
+					"estado":  0,
+				})
+				first_inscripcion = false
+			}
+
 			if library.IndexOf_String(newFact, periodo) == -1 {
 				dataPagos = append(dataPagos, map[string]interface{}{
 					"years":   i,
 					"months":  e,
 					"importe": importe,
 					"estado":  estado, // 0: Cerca, 1: Ok, 2: Mora
-
 				})
 			}
 		}
