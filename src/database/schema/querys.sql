@@ -116,7 +116,8 @@ CREATE TABLE
         password VARCHAR(200) NOT NULL,
         numero_placa VARCHAR(7) NOT NULL,
         CONSTRAINT fk_users_vehiculos FOREIGN KEY (numero_placa) REFERENCES vehiculos (numero_placa),
-        CONSTRAINT unique_email UNIQUE (email)
+        CONSTRAINT unique_email UNIQUE (email),
+        CONSTRAINT unique_placa UNIQUE (numero_placa)
     );
 
 CREATE TABLE
@@ -139,7 +140,7 @@ CREATE TABLE
         latitud double precision,
         longitud double precision,
         numero_placa VARCHAR(7) NOT NULL,
-        numero_flota VARCHAR(7) NOT NULL
+        numero_flota INT NOT NULL,
     );
 
 ------------------------------------------------------------------------

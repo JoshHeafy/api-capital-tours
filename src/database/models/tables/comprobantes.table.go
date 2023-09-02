@@ -73,7 +73,6 @@ func Comprobante_GetSchema() ([]models.Base, string) {
 		Description: "importe",
 		Required:    true,
 		Type:        "float64",
-
 		Float: models.Floats{},
 	})
 	comprobante = append(comprobante, models.Base{ //igv
