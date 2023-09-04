@@ -105,7 +105,14 @@ func signup(w http.ResponseWriter, r *http.Request) {
 	_data_vehiculo := orm.NewQuerys("vehiculos").Select("numero_placa").Where("numero_placa", "=", data_request["numero_placa"]).Exec(orm.Config_Query{Cloud: true}).One()
 
 	if _data_vehiculo["numero_placa"] == nil {
-		controller.ErrorConflict(w, errors.New("esta placa no cuenta con un registro o no es válida"))
+		controller.ErrorConflict(w, errors.New("esta placa no es válida"))
+		return
+	}
+
+	_data_inscripciones := orm.NewQuerys("inscripciones").Select().Where("numero_placa", "=", _data_vehiculo["numero_placa"]).Exec(orm.Config_Query{Cloud: true}).One()
+
+	if len(_data_inscripciones) <= 0 {
+		controller.ErrorConflict(w, errors.New("esta placa no cuenta con una suscripción"))
 		return
 	}
 

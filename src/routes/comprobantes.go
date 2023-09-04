@@ -21,6 +21,7 @@ func RutasComprobantes(r *mux.Router) {
 
 	s.Handle("/info/{numero_documento}", middleware.Autentication(http.HandlerFunc(getOneComprobante))).Methods("GET")
 	s.Handle("/info-detail/{id_comprobante_pago}", middleware.Autentication(http.HandlerFunc(getOneComprobanteDetail))).Methods("GET")
+	s.Handle("/info-to-admin/{numero_flota}", middleware.Autentication(http.HandlerFunc(getComprobanteAdmin))).Methods("GET")
 	s.Handle("/create/{id_inscripcion}", middleware.Autentication(http.HandlerFunc(insertComprobante))).Methods("POST")
 }
 
@@ -63,6 +64,57 @@ func getOneComprobanteDetail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.Data["comprobante_detail"] = _data_comprobante_detail
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func getComprobanteAdmin(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	response := controller.NewResponseManager()
+
+	params := mux.Vars(r)
+	numero_flota := params["numero_flota"]
+
+	_data_inscripcion := orm.NewQuerys("inscripciones").Select().Where("numero_flota", "=", numero_flota).Exec(orm.Config_Query{Cloud: true}).One()
+
+	if len(_data_inscripcion) <= 0 {
+		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))
+		return
+	}
+
+	_data_comprobantes := orm.NewQuerys("comprobante_pago").Select().Where("numero_documento", "=", _data_inscripcion["numero_documento"]).Exec(orm.Config_Query{Cloud: true}).All()
+
+	_data_propietario := orm.NewQuerys("propietarios").Select("nombre_propietario").Where("numero_documento", "=", _data_inscripcion["numero_documento"]).Exec(orm.Config_Query{Cloud: true}).One()
+
+	if len(_data_comprobantes) <= 0 {
+		controller.ErrorsWaning(w, errors.New("no se encontraron resultados para la consulta"))
+		return
+	}
+
+	var detalleComprobante []map[string]interface{}
+
+	for _, comp := range _data_comprobantes {
+		_detalle_comprobante := orm.NewQuerys("detalle_comprobantes").Select("months, years").Where("id_comprobante_pago", "=", comp["id_comprobante_pago"]).Exec(orm.Config_Query{Cloud: true}).One()
+
+		periodo := fmt.Sprintf("%d-%d", _detalle_comprobante["months"], _detalle_comprobante["years"])
+
+		comprobante := map[string]interface{}{
+			"numero_serie":       "0001", //hardcode
+			"numero_comprobante": comp["numero_comprobante"],
+			"numero_documento":   _data_inscripcion["numero_documento"],
+			"cliente":            _data_propietario["nombre_propietario"],
+			"numero_placa":       _data_inscripcion["numero_placa"],
+			"numero_flota":       _data_inscripcion["numero_flota"],
+			"periodo":            periodo,
+			"importe":            comp["importe"],
+			"descuento":          comp["descuento"],
+			"total":              comp["total"],
+		}
+		detalleComprobante = append(detalleComprobante, comprobante)
+	}
+
+	response.Data["comprobantes_detail"] = detalleComprobante
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)

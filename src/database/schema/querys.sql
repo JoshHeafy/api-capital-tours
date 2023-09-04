@@ -86,14 +86,6 @@ CREATE TABLE
         CONSTRAINT fk_detalle_comprobantes_comprobante_pago FOREIGN KEY (id_comprobante_pago) REFERENCES comprobante_pago (id_comprobante_pago)
     );
 
--- CREATE TABLE
---     permisos (
---         id_permiso VARCHAR(36) NOT NULL PRIMARY KEY,
---         fecha_inicio VARCHAR(10) NOT NULL,
---         fecha_fin VARCHAR(10) NOT NULL,
---         id_inscripcion VARCHAR(36) NOT NULL,
---         CONSTRAINT fk_permisos_inscripciones FOREIGN KEY (id_inscripcion) REFERENCES inscripciones (id_inscripcion)
---     );
 --web
 CREATE TABLE
     solicitudes (
@@ -140,67 +132,67 @@ CREATE TABLE
         latitud double precision,
         longitud double precision,
         numero_placa VARCHAR(7) NOT NULL,
-        numero_flota INT NOT NULL,
+        numero_flota INT NOT NULL
     );
 
 ------------------------------------------------------------------------
--- -- Insertar propietarios
--- INSERT INTO
---     propietarios (
---         numero_documento,
---         nombre_propietario,
---         direccion,
---         referencia,
---         tipo_documento,
---         telefono,
---         email
---     )
--- VALUES
---     (
---         '87654321',
---         'alex smith',
---         'Dirección 1',
---         'Referencia 1',
---         1,
---         '987654321',
---         'propietario2@example.com'
---     ),
---     (
---         '98765432',
---         'marlon wayan',
---         'Dirección 2',
---         'Referencia 2',
---         1,
---         '654321987',
---         'propietario3@example.com'
---     ),
---     (
---         '12345678',
---         'matt kunshall',
---         'Dirección 3',
---         'Referencia 3',
---         1,
---         '123456789',
---         'propietario1@example.com'
---     ),
---     (
---         '12345678901',
---         'jhon does',
---         '123 Main St',
---         'near parks',
---         1,
---         '555-1234',
---         'john.doe@example.com'
---     ),
---     (
---         '78978987878',
---         'mateo sape',
---         'av siempreviva 123',
---         'entre dos postes',
---         1,
---         '987564848',
---         'mateo@gmail.com'
---     );
+-- Insertar propietarios
+INSERT INTO
+    propietarios (
+        numero_documento,
+        nombre_propietario,
+        direccion,
+        referencia,
+        tipo_documento,
+        telefono,
+        email
+    )
+VALUES
+    (
+        '87654321',
+        'alex smith',
+        'Dirección 1',
+        'Referencia 1',
+        1,
+        '987654321',
+        'propietario2@example.com'
+    ),
+    (
+        '98765432',
+        'marlon wayan',
+        'Dirección 2',
+        'Referencia 2',
+        1,
+        '654321987',
+        'propietario3@example.com'
+    ),
+    (
+        '12345678',
+        'matt kunshall',
+        'Dirección 3',
+        'Referencia 3',
+        1,
+        '123456789',
+        'propietario1@example.com'
+    ),
+    (
+        '12345678901',
+        'jhon does',
+        '123 Main St',
+        'near parks',
+        1,
+        '555-1234',
+        'john.doe@example.com'
+    ),
+    (
+        '78978987878',
+        'mateo sape',
+        'av siempreviva 123',
+        'entre dos postes',
+        1,
+        '987564848',
+        'mateo@gmail.com'
+    );
 -- -- Insertar vehículos
 -- INSERT INTO
 --     vehiculos (
@@ -409,28 +401,28 @@ CREATE TABLE
 --         8
 --     );
 -- -- Insertar user_admin
--- INSERT INTO
---     users_admin (
---         id_user_admin,
---         cargo,
---         username,
---         nombre,
---         apellidos,
---         id_img,
---         email,
---         password
---     )
--- VALUES
---     (
---         'bd4b2fd5-e250-4872-9faa-a7c48de0d65f',
---         0,
---         'supervisor',
---         'josh',
---         'cordova canchanya',
---         NULL,
---         'joshar456@gmail.com',
---         '$2a$10$P9CxqO3EgE0ftQL2Hpla7endolsLLVMjuG1MN6sllvwo2Ko2knIbG'
---     );
+INSERT INTO
+    users_admin (
+        id_user_admin,
+        cargo,
+        username,
+        nombre,
+        apellidos,
+        id_img,
+        email,
+        password
+    )
+VALUES
+    (
+        'bd4b2fd5-e250-4872-9faa-a7c48de0d65f',
+        0,
+        'supervisor',
+        'josh',
+        'cordova canchanya',
+        NULL,
+        'joshar456@gmail.com',
+        '$2a$10$P9CxqO3EgE0ftQL2Hpla7endolsLLVMjuG1MN6sllvwo2Ko2knIbG'
+    );
 -- -- Insertar solicitudes
 -- INSERT INTO
 --     solicitudes (
