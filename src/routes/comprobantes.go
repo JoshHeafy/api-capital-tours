@@ -102,6 +102,7 @@ func getComprobanteAdmin(w http.ResponseWriter, r *http.Request) {
 		comprobante := map[string]interface{}{
 			"numero_serie":       "0001", //hardcode
 			"numero_comprobante": comp["numero_comprobante"],
+			"fecha":              comp["fecha_pago"],
 			"numero_documento":   _data_inscripcion["numero_documento"],
 			"cliente":            _data_propietario["nombre_propietario"],
 			"numero_placa":       _data_inscripcion["numero_placa"],
