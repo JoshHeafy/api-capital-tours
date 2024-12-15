@@ -5,6 +5,7 @@ import (
 	"api-capital-tours/src/database/orm"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"regexp"
 
@@ -22,6 +23,8 @@ func generateAnalitycs(w http.ResponseWriter, r *http.Request) {
 
 	req_body, err := controller.CheckBody(w, r)
 	if err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("error al leer el cuerpo de la solicitud"))
 		return
 	}
 

@@ -20,6 +20,7 @@ func main() {
 	routes.RutasAuthMovil(r)
 	routes.RutasSolicitudes(r)
 	routes.RutasPropietarios(r)
+	routes.RutasConductores(r)
 	routes.RutasVehiculos(r)
 	routes.RutasInscripciones(r)
 	routes.RutasComprobantes(r)
@@ -35,5 +36,3 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(data)
 }
-
-// Change

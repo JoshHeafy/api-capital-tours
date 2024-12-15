@@ -80,12 +80,24 @@ func (q *Querys) Like(field string, value string) *Querys {
 	q.Query += " WHERE " + field + " LIKE " + "'" + value + "'"
 	return q
 }
+func (q *Querys) Ilike(field string, value string) *Querys {
+	q.Query += " WHERE " + field + " ILIKE " + "'" + value + "'"
+	return q
+}
 func (q *Querys) AndLike(field string, value string) *Querys {
 	q.Query += " AND " + field + " LIKE " + "'" + value + "'"
 	return q
 }
+func (q *Querys) AndIlike(field string, value string) *Querys {
+	q.Query += " AND " + field + " ILIKE " + "'" + value + "'"
+	return q
+}
 func (q *Querys) OrLike(field string, value string) *Querys {
 	q.Query += " OR " + field + " LIKE " + "'" + value + "'"
+	return q
+}
+func (q *Querys) OrIlike(field string, value string) *Querys {
+	q.Query += " OR " + field + " ILIKE " + "'" + value + "'"
 	return q
 }
 
@@ -157,10 +169,8 @@ func (q *Querys) FullJoin(table string, on string) *Querys {
 }
 
 func (q *Querys) Exec(config ...Config_Query) *Querys {
-
 	cloud := false
 	if len(config) >= 1 {
-
 		if config[0].Cloud {
 			cloud = true
 		}

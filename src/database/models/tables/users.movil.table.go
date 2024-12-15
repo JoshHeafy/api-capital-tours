@@ -11,7 +11,7 @@ func UsersMovil_GetSchema() ([]models.Base, string) {
 	tableName := "users_" + "mobile"
 	users = append(users, models.Base{ //id_user
 		Name:        "id_user",
-		Description: "id_user",
+		Description: "ID del usuario",
 		Default:     uuid.New().String(),
 		Required:    true,
 		Important:   true,
@@ -20,7 +20,7 @@ func UsersMovil_GetSchema() ([]models.Base, string) {
 	})
 	users = append(users, models.Base{ //cargo
 		Name:        "cargo",
-		Description: "cargo",
+		Description: "Cargo",
 		Default:     0,
 		Required:    true,
 		Update:      false,
@@ -31,7 +31,7 @@ func UsersMovil_GetSchema() ([]models.Base, string) {
 	})
 	users = append(users, models.Base{ //email
 		Name:        "email",
-		Description: "email",
+		Description: "Email",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -42,7 +42,7 @@ func UsersMovil_GetSchema() ([]models.Base, string) {
 	})
 	users = append(users, models.Base{ //password
 		Name:        "password",
-		Description: "password",
+		Description: "Contraseña",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -53,7 +53,7 @@ func UsersMovil_GetSchema() ([]models.Base, string) {
 	})
 	users = append(users, models.Base{ //numero_placa
 		Name:        "numero_placa",
-		Description: "numero_placa",
+		Description: "Placa del vehículo",
 		Required:    true,
 		Update:      true,
 		Type:        "string",

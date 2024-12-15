@@ -11,7 +11,7 @@ func UsersAdmin_GetSchema() ([]models.Base, string) {
 	tableName := "users_" + "admin"
 	users = append(users, models.Base{ //id_user_admin
 		Name:        "id_user_admin",
-		Description: "id_user_admin",
+		Description: "ID del usuario",
 		Default:     uuid.New().String(),
 		Required:    true,
 		Important:   true,
@@ -20,7 +20,7 @@ func UsersAdmin_GetSchema() ([]models.Base, string) {
 	})
 	users = append(users, models.Base{ //cargo
 		Name:        "cargo",
-		Description: "cargo",
+		Description: "Cargo",
 		Required:    true,
 		Update:      false,
 		Type:        "int64",
@@ -30,7 +30,7 @@ func UsersAdmin_GetSchema() ([]models.Base, string) {
 	})
 	users = append(users, models.Base{ //username
 		Name:        "username",
-		Description: "username",
+		Description: "Nombre de usuario",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -41,7 +41,7 @@ func UsersAdmin_GetSchema() ([]models.Base, string) {
 	})
 	users = append(users, models.Base{ //nombre
 		Name:        "nombre",
-		Description: "nombre",
+		Description: "Nombre",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -52,7 +52,7 @@ func UsersAdmin_GetSchema() ([]models.Base, string) {
 	})
 	users = append(users, models.Base{ //apellidos
 		Name:        "apellidos",
-		Description: "apellidos",
+		Description: "Apellidos",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -63,14 +63,14 @@ func UsersAdmin_GetSchema() ([]models.Base, string) {
 	})
 	users = append(users, models.Base{ //id_img
 		Name:        "id_img",
-		Description: "id_img",
+		Description: "ID de la imagen",
 		Update:      true,
 		Type:        "string",
 		Strings:     models.Strings{},
 	})
 	users = append(users, models.Base{ //email
 		Name:        "email",
-		Description: "email",
+		Description: "Email",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -81,7 +81,7 @@ func UsersAdmin_GetSchema() ([]models.Base, string) {
 	})
 	users = append(users, models.Base{ //password
 		Name:        "password",
-		Description: "password",
+		Description: "Contraseña",
 		Required:    true,
 		Update:      true,
 		Type:        "string",

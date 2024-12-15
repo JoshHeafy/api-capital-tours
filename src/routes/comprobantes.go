@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -146,7 +147,7 @@ func insertComprobante(w http.ResponseWriter, r *http.Request) {
 		for _, val := range _comprobantes_number {
 			newComprobante, err := strconv.Atoi(val["numero_comprobante"].(string))
 			if err != nil {
-				fmt.Println("Error al convertir el string a int:", err)
+				log.Println("Error al convertir el string a int:", err)
 				return
 			}
 			comprobantesList = append(comprobantesList, newComprobante)
@@ -164,6 +165,8 @@ func insertComprobante(w http.ResponseWriter, r *http.Request) {
 
 	data_request, err := controller.CheckBody(w, r)
 	if err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("error al leer el cuerpo de la solicitud"))
 		return
 	}
 
@@ -191,9 +194,9 @@ func insertComprobante(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = comprobantes.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err := comprobantes.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al crear el comprobante, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 
@@ -214,9 +217,9 @@ func insertComprobante(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = comprobantes_detalle.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err := comprobantes_detalle.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al crear el detalle del comprobante, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 

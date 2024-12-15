@@ -30,6 +30,8 @@ func loginMovil(w http.ResponseWriter, r *http.Request) {
 
 	req_body, err := controller.CheckBody(w, r)
 	if err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("error al leer el cuerpo de la solicitud"))
 		return
 	}
 
@@ -87,7 +89,8 @@ func generateJWTTokenMovil(idUser string, email string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(key))
 	if err != nil {
-		return "", err
+		log.Println(err)
+		return "", errors.New("error al generar token")
 	}
 
 	return tokenString, nil
@@ -99,6 +102,8 @@ func signup(w http.ResponseWriter, r *http.Request) {
 
 	data_request, err := controller.CheckBody(w, r)
 	if err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("error al leer el cuerpo de la solicitud"))
 		return
 	}
 
@@ -128,15 +133,15 @@ func signup(w http.ResponseWriter, r *http.Request) {
 
 	schema, table := tables.UsersMovil_GetSchema()
 	clientes := orm.SqlExec{}
-	err = clientes.New(data_insert, table).Insert(schema)
-	if err != nil {
+
+	if err := clientes.New(data_insert, table).Insert(schema); err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = clientes.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err := clientes.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al registrar al usuario, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 

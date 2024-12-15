@@ -11,7 +11,7 @@ func Comprobante_GetSchema() ([]models.Base, string) {
 	tableName := "comprobante_" + "pago"
 	comprobante = append(comprobante, models.Base{ //id_comprobante_comprobante
 		Name:        "id_comprobante_pago",
-		Description: "id_comprobante_pago",
+		Description: "ID del comprobante de pago",
 		Important:   true,
 		Required:    true,
 		Default:     uuid.New().String(),
@@ -20,7 +20,7 @@ func Comprobante_GetSchema() ([]models.Base, string) {
 	})
 	comprobante = append(comprobante, models.Base{ //numero_documento
 		Name:        "numero_documento",
-		Description: "numero_documento",
+		Description: "Número de documento",
 		Required:    true,
 		Type:        "string",
 		Strings: models.Strings{
@@ -31,7 +31,7 @@ func Comprobante_GetSchema() ([]models.Base, string) {
 	})
 	comprobante = append(comprobante, models.Base{ //tipo
 		Name:        "tipo",
-		Description: "tipo",
+		Description: "Tipo de comprobante",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -43,7 +43,7 @@ func Comprobante_GetSchema() ([]models.Base, string) {
 	})
 	comprobante = append(comprobante, models.Base{ //numero_serie
 		Name:        "numero_serie",
-		Description: "numero_serie",
+		Description: "Numero de serie",
 		Required:    true,
 		Type:        "string",
 		Strings: models.Strings{
@@ -54,7 +54,7 @@ func Comprobante_GetSchema() ([]models.Base, string) {
 	})
 	comprobante = append(comprobante, models.Base{ //numero_comprobante
 		Name:        "numero_comprobante",
-		Description: "numero_comprobante",
+		Description: "Numero de comprobante",
 		Required:    true,
 		Type:        "string",
 		Strings:     models.Strings{},
@@ -70,14 +70,14 @@ func Comprobante_GetSchema() ([]models.Base, string) {
 	})
 	comprobante = append(comprobante, models.Base{ //importe
 		Name:        "importe",
-		Description: "importe",
+		Description: "Importe",
 		Required:    true,
 		Type:        "float64",
-		Float: models.Floats{},
+		Float:       models.Floats{},
 	})
 	comprobante = append(comprobante, models.Base{ //igv
 		Name:        "igv",
-		Description: "igv",
+		Description: "IGV",
 		Required:    true,
 		Update:      true,
 		Type:        "float64",
@@ -85,21 +85,20 @@ func Comprobante_GetSchema() ([]models.Base, string) {
 	})
 	comprobante = append(comprobante, models.Base{ //descuento
 		Name:        "descuento",
-		Description: "descuento",
+		Description: "Descuento",
 		Type:        "float64",
-
-		Float: models.Floats{},
+		Float:       models.Floats{},
 	})
 	comprobante = append(comprobante, models.Base{ //total
 		Name:        "total",
-		Description: "total",
+		Description: "Total",
 		Required:    true,
 		Type:        "float64",
 		Float:       models.Floats{},
 	})
 	comprobante = append(comprobante, models.Base{ //observaciones
 		Name:        "observaciones",
-		Description: "observaciones",
+		Description: "Observaciones",
 		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
@@ -109,7 +108,7 @@ func Comprobante_GetSchema() ([]models.Base, string) {
 	})
 	comprobante = append(comprobante, models.Base{ //estado
 		Name:        "estado",
-		Description: "estado",
+		Description: "Estado",
 		Default:     1,
 		Required:    true,
 		Update:      true,
@@ -120,7 +119,7 @@ func Comprobante_GetSchema() ([]models.Base, string) {
 	})
 	comprobante = append(comprobante, models.Base{ //id_inscripcion
 		Name:        "id_inscripcion",
-		Description: "id_inscripcion",
+		Description: "ID de la inscripcion",
 		Required:    true,
 		Important:   true,
 		Type:        "string",

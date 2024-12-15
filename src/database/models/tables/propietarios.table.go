@@ -9,27 +9,27 @@ func Propietarios_GetSchema() ([]models.Base, string) {
 	tableName := "propietarios"
 	propietarios = append(propietarios, models.Base{ //numero_documento
 		Name:        "numero_documento",
-		Description: "numero_documento",
+		Description: "Número de documento",
 		Important:   true,
 		Required:    true,
 		Update:      false,
 		Type:        "string",
 		Strings: models.Strings{
-			Min: 8,
-			Max: 11,
+			Min: 7,
+			Max: 20,
 		},
 	})
 	propietarios = append(propietarios, models.Base{ //tipo_documento
 		Name:        "tipo_documento",
-		Description: "tipo_documento",
+		Description: "Tipo de documento",
 		Required:    true,
-		Update:      false,
+		Update:      true,
 		Type:        "uint64",
 		Uint:        models.Uints{},
 	})
 	propietarios = append(propietarios, models.Base{ //nombre_propietario
 		Name:        "nombre_propietario",
-		Description: "nombre_propietario",
+		Description: "Nombre del propietario",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -41,7 +41,7 @@ func Propietarios_GetSchema() ([]models.Base, string) {
 	})
 	propietarios = append(propietarios, models.Base{ //direccion
 		Name:        "direccion",
-		Description: "direccion",
+		Description: "Dirección",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -53,7 +53,7 @@ func Propietarios_GetSchema() ([]models.Base, string) {
 	})
 	propietarios = append(propietarios, models.Base{ //telefono
 		Name:        "telefono",
-		Description: "telefono",
+		Description: "Teléfono",
 		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
@@ -64,18 +64,18 @@ func Propietarios_GetSchema() ([]models.Base, string) {
 	})
 	propietarios = append(propietarios, models.Base{ //email
 		Name:        "email",
-		Description: "email",
+		Description: "Email",
 		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
-			Min:       12,
+			Min:       10,
 			Max:       50,
 			LowerCase: true,
 		},
 	})
 	propietarios = append(propietarios, models.Base{ //referencia
 		Name:        "referencia",
-		Description: "referencia",
+		Description: "Referencia",
 		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
