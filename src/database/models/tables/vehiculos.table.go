@@ -9,7 +9,7 @@ func Vehiculos_GetSchema() ([]models.Base, string) {
 	tableName := "vehiculos"
 	vehiculos = append(vehiculos, models.Base{ //numero_placa
 		Name:        "numero_placa",
-		Description: "numero_placa",
+		Description: "Numero de placa",
 		Required:    true,
 		Important:   true,
 		Type:        "string",
@@ -21,7 +21,7 @@ func Vehiculos_GetSchema() ([]models.Base, string) {
 	})
 	vehiculos = append(vehiculos, models.Base{ //marca
 		Name:        "marca",
-		Description: "marca",
+		Description: "Marca",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -33,7 +33,7 @@ func Vehiculos_GetSchema() ([]models.Base, string) {
 	})
 	vehiculos = append(vehiculos, models.Base{ //modelo
 		Name:        "modelo",
-		Description: "modelo",
+		Description: "Modelo",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -45,7 +45,7 @@ func Vehiculos_GetSchema() ([]models.Base, string) {
 	})
 	vehiculos = append(vehiculos, models.Base{ //anio
 		Name:        "anio",
-		Description: "anio",
+		Description: "Año",
 		Required:    true,
 		Update:      true,
 		Type:        "int64",
@@ -56,7 +56,7 @@ func Vehiculos_GetSchema() ([]models.Base, string) {
 	})
 	vehiculos = append(vehiculos, models.Base{ //color
 		Name:        "color",
-		Description: "color",
+		Description: "Color",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -67,7 +67,7 @@ func Vehiculos_GetSchema() ([]models.Base, string) {
 	})
 	vehiculos = append(vehiculos, models.Base{ //numero_serie
 		Name:        "numero_serie",
-		Description: "numero_serie",
+		Description: "Número de serie",
 		Required:    true,
 		Type:        "string",
 		Strings: models.Strings{
@@ -77,7 +77,7 @@ func Vehiculos_GetSchema() ([]models.Base, string) {
 	})
 	vehiculos = append(vehiculos, models.Base{ //numero_pasajeros
 		Name:        "numero_pasajeros",
-		Description: "numero_pasajeros",
+		Description: "Número de pasajeros",
 		Required:    true,
 		Type:        "int64",
 		Int: models.Ints{
@@ -86,7 +86,7 @@ func Vehiculos_GetSchema() ([]models.Base, string) {
 	})
 	vehiculos = append(vehiculos, models.Base{ //numero_asientos
 		Name:        "numero_asientos",
-		Description: "numero_asientos",
+		Description: "Número de asientos",
 		Required:    true,
 		Update:      true,
 		Type:        "int64",
@@ -96,7 +96,7 @@ func Vehiculos_GetSchema() ([]models.Base, string) {
 	})
 	vehiculos = append(vehiculos, models.Base{ //observaciones
 		Name:        "observaciones",
-		Description: "observaciones",
+		Description: "Observaciones",
 		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
@@ -106,7 +106,7 @@ func Vehiculos_GetSchema() ([]models.Base, string) {
 	})
 	vehiculos = append(vehiculos, models.Base{ //numero_documento
 		Name:        "numero_documento",
-		Description: "numero_documento",
+		Description: "Número de documento",
 		Required:    true,
 		Update:      true,
 		Type:        "string",

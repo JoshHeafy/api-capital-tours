@@ -11,7 +11,7 @@ func Detalleinscripciones_GetSchema() ([]models.Base, string) {
 	tableName := "detalle_" + "inscripciones"
 	detalleinscripciones = append(detalleinscripciones, models.Base{ //id_detalle_inscripcion
 		Name:        "id_detalle_inscripcion",
-		Description: "id_detalle_inscripcion",
+		Description: "ID del detalle de inscripcion",
 		Default:     uuid.New().String(),
 		Required:    true,
 		Type:        "string",
@@ -19,7 +19,7 @@ func Detalleinscripciones_GetSchema() ([]models.Base, string) {
 	})
 	detalleinscripciones = append(detalleinscripciones, models.Base{ //fecha_pago
 		Name:        "fecha_pago",
-		Description: "fecha_pago",
+		Description: "Fecha de pago",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -30,7 +30,7 @@ func Detalleinscripciones_GetSchema() ([]models.Base, string) {
 	})
 	detalleinscripciones = append(detalleinscripciones, models.Base{ //years
 		Name:        "years",
-		Description: "years",
+		Description: "Año",
 		Required:    true,
 		Update:      true,
 		Type:        "uint64",
@@ -40,7 +40,7 @@ func Detalleinscripciones_GetSchema() ([]models.Base, string) {
 	})
 	detalleinscripciones = append(detalleinscripciones, models.Base{ //months
 		Name:        "months",
-		Description: "months",
+		Description: "Mes",
 		Required:    true,
 		Update:      true,
 		Type:        "uint64",
@@ -50,14 +50,14 @@ func Detalleinscripciones_GetSchema() ([]models.Base, string) {
 	})
 	detalleinscripciones = append(detalleinscripciones, models.Base{ //importe
 		Name:        "importe",
-		Description: "importe",
+		Description: "Importe",
 		Update:      true,
 		Type:        "float64",
 		Float:       models.Floats{},
 	})
 	detalleinscripciones = append(detalleinscripciones, models.Base{ //numero_documento
 		Name:        "numero_documento",
-		Description: "numero_documento",
+		Description: "Número de documento",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -68,7 +68,7 @@ func Detalleinscripciones_GetSchema() ([]models.Base, string) {
 	})
 	detalleinscripciones = append(detalleinscripciones, models.Base{ //estado
 		Name:        "estado",
-		Description: "estado",
+		Description: "Estado",
 		Default:     1,
 		Required:    true,
 		Update:      true,
@@ -79,7 +79,7 @@ func Detalleinscripciones_GetSchema() ([]models.Base, string) {
 	})
 	detalleinscripciones = append(detalleinscripciones, models.Base{ //id_inscripcion
 		Name:        "id_inscripcion",
-		Description: "id_inscripcion",
+		Description: "ID de la inscripcion",
 		Required:    true,
 		Important:   true,
 		Type:        "string",

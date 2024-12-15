@@ -12,7 +12,7 @@ func Solicitudes_GetSchema() ([]models.Base, string) {
 
 	solicitudes = append(solicitudes, models.Base{ //id_solicitud
 		Name:        "id_solicitud",
-		Description: "id_solicitud",
+		Description: "ID de la solicitud",
 		Default:     uuid.New().String(),
 		Important:   true,
 		Required:    true,
@@ -21,7 +21,7 @@ func Solicitudes_GetSchema() ([]models.Base, string) {
 	})
 	solicitudes = append(solicitudes, models.Base{ //nombre
 		Name:        "nombre",
-		Description: "nombre",
+		Description: "Nombre",
 		Required:    true,
 		Type:        "string",
 		Strings: models.Strings{
@@ -32,7 +32,7 @@ func Solicitudes_GetSchema() ([]models.Base, string) {
 	})
 	solicitudes = append(solicitudes, models.Base{ //email
 		Name:        "email",
-		Description: "email",
+		Description: "Email",
 		Required:    true,
 		Type:        "string",
 		Strings: models.Strings{
@@ -42,7 +42,7 @@ func Solicitudes_GetSchema() ([]models.Base, string) {
 	})
 	solicitudes = append(solicitudes, models.Base{ //telefono
 		Name:        "telefono",
-		Description: "telefono",
+		Description: "Telefono",
 		Required:    true,
 		Type:        "string",
 		Strings: models.Strings{
@@ -52,7 +52,7 @@ func Solicitudes_GetSchema() ([]models.Base, string) {
 	})
 	solicitudes = append(solicitudes, models.Base{ //asunto
 		Name:        "asunto",
-		Description: "asunto",
+		Description: "Asunto",
 		Required:    true,
 		Type:        "string",
 		Strings: models.Strings{
@@ -63,7 +63,7 @@ func Solicitudes_GetSchema() ([]models.Base, string) {
 	})
 	solicitudes = append(solicitudes, models.Base{ //mensaje
 		Name:        "mensaje",
-		Description: "mensaje",
+		Description: "Mensaje",
 		Type:        "string",
 		Strings: models.Strings{
 			Min:       10,
@@ -73,7 +73,7 @@ func Solicitudes_GetSchema() ([]models.Base, string) {
 	})
 	solicitudes = append(solicitudes, models.Base{ //leido
 		Name:        "leido",
-		Description: "leido",
+		Description: "Leido",
 		Type:        "uint64",
 		Default:     0,
 		Update:      true,

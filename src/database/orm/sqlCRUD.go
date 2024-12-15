@@ -80,7 +80,6 @@ func (sq *SqlExec) Insert(schema []models.Base) error {
 				sqlExec = append(sqlExec, lineSqlExec)
 
 			} else {
-
 				return err
 			}
 		}
@@ -281,8 +280,6 @@ func (sq *SqlExec) Exec(params ...bool) error {
 }
 
 func _checkInsertSchema(schema []models.Base, tabla_map map[string]interface{}) (map[string]interface{}, error) {
-
-	// var err_cont uint64 = 0
 	var err_cont uint
 	var error string
 

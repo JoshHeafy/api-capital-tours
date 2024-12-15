@@ -12,7 +12,7 @@ func Inscripciones_GetSchema() ([]models.Base, string) {
 	id_inscripcion := uuid.New().String()
 	inscripciones = append(inscripciones, models.Base{ //id_inscripcion
 		Name:        "id_inscripcion",
-		Description: "id_inscripcion",
+		Description: "ID de la inscripcion",
 		Required:    true,
 		Default:     id_inscripcion,
 		Type:        "string",
@@ -22,7 +22,7 @@ func Inscripciones_GetSchema() ([]models.Base, string) {
 	})
 	inscripciones = append(inscripciones, models.Base{ //numero_documento
 		Name:        "numero_documento",
-		Description: "numero_documento",
+		Description: "Número de documento",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -33,7 +33,7 @@ func Inscripciones_GetSchema() ([]models.Base, string) {
 	})
 	inscripciones = append(inscripciones, models.Base{ //fecha_inicio
 		Name:        "fecha_inicio",
-		Description: "fecha_inicio",
+		Description: "Fecha de inicio",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -44,7 +44,7 @@ func Inscripciones_GetSchema() ([]models.Base, string) {
 	})
 	inscripciones = append(inscripciones, models.Base{ //importe
 		Name:        "importe",
-		Description: "importe",
+		Description: "Importe",
 		Update:      true,
 		Type:        "float64",
 		Float: models.Floats{
@@ -53,7 +53,7 @@ func Inscripciones_GetSchema() ([]models.Base, string) {
 	})
 	inscripciones = append(inscripciones, models.Base{ //fecha_pago
 		Name:        "fecha_pago",
-		Description: "fecha_pago",
+		Description: "Fecha de pago",
 		Required:    true,
 		Update:      true,
 		Type:        "string",
@@ -64,7 +64,7 @@ func Inscripciones_GetSchema() ([]models.Base, string) {
 	})
 	inscripciones = append(inscripciones, models.Base{ //years
 		Name:        "years",
-		Description: "years",
+		Description: "Years",
 		Required:    true,
 		Update:      true,
 		Type:        "uint64",
@@ -74,7 +74,7 @@ func Inscripciones_GetSchema() ([]models.Base, string) {
 	})
 	inscripciones = append(inscripciones, models.Base{ //months
 		Name:        "months",
-		Description: "months",
+		Description: "Mes",
 		Required:    true,
 		Update:      true,
 		Type:        "uint64",
@@ -84,7 +84,7 @@ func Inscripciones_GetSchema() ([]models.Base, string) {
 	})
 	inscripciones = append(inscripciones, models.Base{ //estado
 		Name:        "estado",
-		Description: "estado",
+		Description: "Estado",
 		Default:     1,
 		Required:    true,
 		Update:      true,
@@ -95,8 +95,7 @@ func Inscripciones_GetSchema() ([]models.Base, string) {
 	})
 	inscripciones = append(inscripciones, models.Base{ //fecha_fin
 		Name:        "fecha_fin",
-		Description: "fecha_fin",
-		Update:      true,
+		Description: "Fecha de finalización",
 		Empty:       true,
 		Type:        "string",
 		Strings: models.Strings{
@@ -105,7 +104,7 @@ func Inscripciones_GetSchema() ([]models.Base, string) {
 	})
 	inscripciones = append(inscripciones, models.Base{ //numero_flota
 		Name:        "numero_flota",
-		Description: "numero_flota",
+		Description: "Número de flota",
 		Required:    true,
 		Update:      true,
 		Type:        "int64",
@@ -115,7 +114,7 @@ func Inscripciones_GetSchema() ([]models.Base, string) {
 	})
 	inscripciones = append(inscripciones, models.Base{ //numero_placa
 		Name:        "numero_placa",
-		Description: "numero_placa",
+		Description: "Número de placa",
 		Required:    true,
 		Important:   true,
 		Type:        "string",

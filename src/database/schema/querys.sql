@@ -1,12 +1,12 @@
 -- CREATE DATABASE capital_tours;
 CREATE TABLE
     propietarios (
-        numero_documento VARCHAR(11) NOT NULL PRIMARY KEY,
+        numero_documento VARCHAR(20) NOT NULL PRIMARY KEY,
         nombre_propietario VARCHAR(200) NOT NULL,
         direccion VARCHAR(150) NOT NULL,
         referencia VARCHAR(150),
         tipo_documento int NOT NULL,
-        telefono VARCHAR(9),
+        telefono VARCHAR(20),
         email VARCHAR(150)
     );
 
@@ -21,14 +21,30 @@ CREATE TABLE
         numero_pasajeros INT NOT NULL, --default 4
         numero_asientos INT NOT NULL, --default 5
         observaciones VARCHAR(100),
-        numero_documento VARCHAR(11) NOT NULL,
+        numero_documento VARCHAR(20) NOT NULL,
         CONSTRAINT fk_vehiculos_propietarios FOREIGN KEY (numero_documento) REFERENCES propietarios (numero_documento)
+    );
+
+CREATE TABLE
+    conductores (
+        numero_licencia VARCHAR(10) NOT NULL PRIMARY KEY,
+        categoria_licencia VARCHAR(6) NOT NULL, -- A I, A IIA, A IIB, A IIIA, A IIIB, A IIIC
+        fecha_caducacion_licencia VARCHAR(10) NOT NULL,
+        fecha_nacimiento VARCHAR(10) NOT NULL,
+        nombre_conductor VARCHAR(150) NOT NULL,
+        genero int NOT NULL, -- 0: masculino, 1: femenino, 2: otro
+        direccion VARCHAR(150) NOT NULL,
+        telefono VARCHAR(20),
+        email VARCHAR(150),
+        estado INT NOT NULL default 1, -- 0: inactivo, 1: activo
+        numero_placa VARCHAR(7) NOT NULL,
+        CONSTRAINT fk_conductores_vehiculos FOREIGN KEY (numero_placa) REFERENCES vehiculos (numero_placa)
     );
 
 CREATE TABLE
     inscripciones (
         id_inscripcion VARCHAR(36) NOT NULL PRIMARY KEY,
-        numero_documento VARCHAR(11) NOT NULL,
+        numero_documento VARCHAR(20) NOT NULL,
         fecha_inicio VARCHAR(10) NOT NULL,
         importe FLOAT8 NOT NULL DEFAULT 0.0,
         fecha_pago VARCHAR(10) NOT NULL,
@@ -49,7 +65,7 @@ CREATE TABLE
         years int NOT NULL,
         months int NOT NULL,
         importe FLOAT8 NOT NULL DEFAULT 0.0,
-        numero_documento VARCHAR(11) NOT NULL,
+        numero_documento VARCHAR(20) NOT NULL,
         estado INT DEFAULT 0, -- 0: inactivo, 1: activo
         id_inscripcion varchar(36) not null,
         CONSTRAINT fk_detalle_inscripciones_inscripciones FOREIGN KEY (id_inscripcion) REFERENCES inscripciones (id_inscripcion)
@@ -58,7 +74,7 @@ CREATE TABLE
 CREATE TABLE
     comprobante_pago (
         id_comprobante_pago VARCHAR(36) NOT NULL PRIMARY KEY,
-        numero_documento VARCHAR(11) NOT NULL,
+        numero_documento VARCHAR(20) NOT NULL,
         tipo varchar(2) NOT NULL,
         numero_serie VARCHAR(4) NOT NULL,
         numero_comprobante VARCHAR(10) NOT NULL,
@@ -193,6 +209,7 @@ VALUES
         '987564848',
         'mateo@gmail.com'
     );
+
 -- -- Insertar vehículos
 -- INSERT INTO
 --     vehiculos (
@@ -421,8 +438,9 @@ VALUES
         'cordova canchanya',
         NULL,
         'joshar456@gmail.com',
-        '$2a$10$P9CxqO3EgE0ftQL2Hpla7endolsLLVMjuG1MN6sllvwo2Ko2knIbG'
+        '$2a$10$ITLIqxcKb4Wf8zTc41oI1ewpb/S2w0e22RD354oWhM3iX359ezRgW'
     );
+
 -- -- Insertar solicitudes
 -- INSERT INTO
 --     solicitudes (

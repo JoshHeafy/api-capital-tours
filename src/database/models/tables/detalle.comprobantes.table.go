@@ -7,7 +7,7 @@ func DetalleComprobantes_GetSchema() ([]models.Base, string) {
 	tableName := "detalle_" + "comprobantes"
 	detalleComprobantes = append(detalleComprobantes, models.Base{ //id_comprobante_pago
 		Name:        "id_comprobante_pago",
-		Description: "id_comprobante_pago",
+		Description: "ID del detalle de comprobante de pago",
 		Required:    true,
 		Important:   true,
 		Type:        "string",
@@ -15,35 +15,35 @@ func DetalleComprobantes_GetSchema() ([]models.Base, string) {
 	})
 	detalleComprobantes = append(detalleComprobantes, models.Base{ //importe
 		Name:        "importe",
-		Description: "importe",
+		Description: "Importe",
 		Required:    true,
 		Type:        "float64",
 		Float:       models.Floats{},
 	})
 	detalleComprobantes = append(detalleComprobantes, models.Base{ //descuento
 		Name:        "descuento",
-		Description: "descuento",
+		Description: "Descuento",
 		Type:        "float64",
 		Required:    true,
 		Float:       models.Floats{},
 	})
 	detalleComprobantes = append(detalleComprobantes, models.Base{ //igv
 		Name:        "igv",
-		Description: "igv",
+		Description: "IGV",
 		Required:    true,
 		Type:        "float64",
 		Float:       models.Floats{},
 	})
 	detalleComprobantes = append(detalleComprobantes, models.Base{ //total
 		Name:        "total",
-		Description: "total",
+		Description: "Total",
 		Required:    true,
 		Type:        "float64",
 		Float:       models.Floats{},
 	})
 	detalleComprobantes = append(detalleComprobantes, models.Base{ //years
 		Name:        "years",
-		Description: "years",
+		Description: "Año",
 		Required:    true,
 		Type:        "uint64",
 		Uint: models.Uints{
@@ -52,7 +52,7 @@ func DetalleComprobantes_GetSchema() ([]models.Base, string) {
 	})
 	detalleComprobantes = append(detalleComprobantes, models.Base{ //months
 		Name:        "months",
-		Description: "months",
+		Description: "Mes",
 		Required:    true,
 		Type:        "uint64",
 		Uint: models.Uints{

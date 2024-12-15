@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -92,6 +93,8 @@ func insertInscripciones(w http.ResponseWriter, r *http.Request) {
 
 	data_request, err := controller.CheckBody(w, r)
 	if err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("error al leer el cuerpo de la solicitud"))
 		return
 	}
 
@@ -117,15 +120,15 @@ func insertInscripciones(w http.ResponseWriter, r *http.Request) {
 
 	schema, table := tables.Inscripciones_GetSchema()
 	inscripciones := orm.SqlExec{}
-	err = inscripciones.New([]map[string]interface{}{data_insert}, table).Insert(schema)
-	if err != nil {
+
+	if err := inscripciones.New([]map[string]interface{}{data_insert}, table).Insert(schema); err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = inscripciones.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err := inscripciones.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al crear la inscripción, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 
@@ -138,15 +141,15 @@ func insertInscripciones(w http.ResponseWriter, r *http.Request) {
 
 	schema_ins_detail, table := tables.Detalleinscripciones_GetSchema()
 	inscripciones_detail := orm.SqlExec{}
-	err = inscripciones_detail.New([]map[string]interface{}{data_insert_detalle_inscripcion}, table).Insert(schema_ins_detail)
-	if err != nil {
+
+	if err := inscripciones_detail.New([]map[string]interface{}{data_insert_detalle_inscripcion}, table).Insert(schema_ins_detail); err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = inscripciones_detail.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err := inscripciones_detail.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al crear el detalle de la inscripción, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 
@@ -189,9 +192,10 @@ func darAlta(w http.ResponseWriter, r *http.Request) {
 		controller.ErrorsWaning(w, errors.New(err.Error()))
 		return
 	}
-	err = servicio.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+
+	if err := servicio.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al dar de alta la inscripción, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 
@@ -217,15 +221,15 @@ func darBaja(w http.ResponseWriter, r *http.Request) {
 
 	schema, table := tables.Inscripciones_GetSchema()
 	servicio := orm.SqlExec{}
-	err := servicio.New(data_update, table).Update(schema)
-	if err != nil {
+
+	if err := servicio.New(data_update, table).Update(schema); err != nil {
 		controller.ErrorsWaning(w, errors.New(err.Error()))
 		return
 	}
 
-	err = servicio.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err := servicio.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al dar de baja la inscripción, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 

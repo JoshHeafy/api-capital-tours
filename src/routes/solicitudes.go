@@ -7,6 +7,7 @@ import (
 	"api-capital-tours/src/middleware"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -41,6 +42,8 @@ func insertSolicitud(w http.ResponseWriter, r *http.Request) {
 
 	data_request, err := controller.CheckBody(w, r)
 	if err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("error al leer el cuerpo de la solicitud"))
 		return
 	}
 
@@ -48,15 +51,15 @@ func insertSolicitud(w http.ResponseWriter, r *http.Request) {
 
 	schema, table := tables.Solicitudes_GetSchema()
 	solicitudes := orm.SqlExec{}
-	err = solicitudes.New(data_insert, table).Insert(schema)
-	if err != nil {
+
+	if err := solicitudes.New(data_insert, table).Insert(schema); err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = solicitudes.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err := solicitudes.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al crear la solicitud, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 
@@ -80,15 +83,15 @@ func markAsRead(w http.ResponseWriter, r *http.Request) {
 
 	schema, table := tables.Solicitudes_GetSchema()
 	solicitudes := orm.SqlExec{}
-	err := solicitudes.New(data_update, table).Update(schema)
-	if err != nil {
+
+	if err := solicitudes.New(data_update, table).Update(schema); err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = solicitudes.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err := solicitudes.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al actualizar la solicitud, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 

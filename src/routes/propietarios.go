@@ -10,7 +10,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
+	"regexp"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -48,22 +50,28 @@ func insertPropietarios(w http.ResponseWriter, r *http.Request) {
 
 	data_request, err := controller.CheckBody(w, r)
 	if err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("error al leer el cuerpo de la solicitud"))
 		return
 	}
 
 	data_insert := append([]map[string]interface{}{}, data_request)
 
+	for i := range data_insert {
+		data_insert[i]["numero_documento"] = formatString(data_insert[i]["numero_documento"].(string))
+	}
+
 	schema, table := tables.Propietarios_GetSchema()
 	propietarios := orm.SqlExec{}
-	err = propietarios.New(data_insert, table).Insert(schema)
-	if err != nil {
+
+	if err := propietarios.New(data_insert, table).Insert(schema); err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = propietarios.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err := propietarios.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al crear el propietario, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 
@@ -110,15 +118,15 @@ func updatePropietario(w http.ResponseWriter, r *http.Request) {
 
 	schema, table := tables.Propietarios_GetSchema()
 	propietarios := orm.SqlExec{}
-	err = propietarios.New(data_update, table).Update(schema)
-	if err != nil {
+
+	if err := propietarios.New(data_update, table).Update(schema); err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = propietarios.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err := propietarios.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al actualizar el propietario, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 
@@ -134,7 +142,7 @@ func propietariosFilter(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	filtro := params["filtro"]
 
-	_data_propietarios := orm.NewQuerys("propietarios").Select().Like("numero_documento", "%"+filtro+"%").OrLike("nombre_propietario", "%"+filtro+"%").OrderBy("nombre_propietario").Exec(orm.Config_Query{Cloud: true}).All()
+	_data_propietarios := orm.NewQuerys("propietarios").Select().Ilike("numero_documento", "%"+filtro+"%").OrLike("nombre_propietario", "%"+filtro+"%").OrderBy("nombre_propietario").Exec(orm.Config_Query{Cloud: true}).All()
 
 	response.Data["propietarios"] = _data_propietarios
 	w.WriteHeader(http.StatusOK)
@@ -258,4 +266,15 @@ func consultaWeb(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
+}
+
+func formatString(input string) string {
+	reg, err := regexp.Compile("[^a-zA-Z0-9]+")
+	if err != nil {
+		fmt.Println("Error al compilar la expresión regular:", err)
+		return input
+	}
+
+	formatted := reg.ReplaceAllString(input, "")
+	return formatted
 }

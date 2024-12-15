@@ -7,6 +7,7 @@ import (
 	"api-capital-tours/src/middleware"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -44,6 +45,8 @@ func insertVehiculos(w http.ResponseWriter, r *http.Request) {
 
 	data_request, err := controller.CheckBody(w, r)
 	if err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("error al leer el cuerpo de la solicitud"))
 		return
 	}
 
@@ -51,15 +54,15 @@ func insertVehiculos(w http.ResponseWriter, r *http.Request) {
 
 	schema, table := tables.Vehiculos_GetSchema()
 	vehiculos := orm.SqlExec{}
-	err = vehiculos.New(data_insert, table).Insert(schema)
-	if err != nil {
+
+	if err := vehiculos.New(data_insert, table).Insert(schema); err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = vehiculos.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err := vehiculos.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al crear el vehículo, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 
@@ -115,6 +118,8 @@ func updateVehiculo(w http.ResponseWriter, r *http.Request) {
 
 	data_request, err := controller.CheckBody(w, r)
 	if err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("error al leer el cuerpo de la solicitud"))
 		return
 	}
 	data_request["where"] = map[string]interface{}{"numero_placa": numero_placa}
@@ -124,15 +129,15 @@ func updateVehiculo(w http.ResponseWriter, r *http.Request) {
 
 	schema, table := tables.Vehiculos_GetSchema()
 	vehiculos := orm.SqlExec{}
-	err = vehiculos.New(data_update, table).Update(schema)
-	if err != nil {
+
+	if err := vehiculos.New(data_update, table).Update(schema); err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = vehiculos.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err := vehiculos.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al actualizar el vehículo, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 
@@ -150,6 +155,8 @@ func reAssignVehiculo(w http.ResponseWriter, r *http.Request) {
 
 	data_request, err := controller.CheckBody(w, r)
 	if err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("error al leer el cuerpo de la solicitud"))
 		return
 	}
 
@@ -183,21 +190,21 @@ func reAssignVehiculo(w http.ResponseWriter, r *http.Request) {
 			},
 		})
 
-		inscripciones_data = reAssingInscripcionInsert(w, r, data_update_inscripcion)
-		inscripciones_detail_data = reAssingInscripcionDetailInsert(w, r, data_update_inscripcion_detail)
+		inscripciones_data = reAssingInscripcionInsert(w, data_update_inscripcion)
+		inscripciones_detail_data = reAssingInscripcionDetailInsert(w, data_update_inscripcion_detail)
 	}
 
 	schema, table := tables.Vehiculos_GetSchema()
 	vehiculos := orm.SqlExec{}
-	err = vehiculos.New(data_update_vehiculo, table).Update(schema)
-	if err != nil {
+
+	if err := vehiculos.New(data_update_vehiculo, table).Update(schema); err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = vehiculos.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err = vehiculos.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al re asignar el vehiculo, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 
@@ -208,36 +215,36 @@ func reAssignVehiculo(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func reAssingInscripcionInsert(w http.ResponseWriter, r *http.Request, data []map[string]interface{}) map[string]interface{} {
+func reAssingInscripcionInsert(w http.ResponseWriter, data []map[string]interface{}) map[string]interface{} {
 	schemaIns, tableIns := tables.Inscripciones_GetSchema()
 	inscripciones := orm.SqlExec{}
-	errIns := inscripciones.New(data, tableIns).Update(schemaIns)
-	if errIns != nil {
+
+	if errIns := inscripciones.New(data, tableIns).Update(schemaIns); errIns != nil {
 		controller.ErrorsWaning(w, errIns)
 		return map[string]interface{}{}
 	}
 
-	errIns = inscripciones.Exec()
-	if errIns != nil {
-		controller.ErrorsWaning(w, errIns)
+	if errIns := inscripciones.Exec(); errIns != nil {
+		log.Println(errIns)
+		controller.ErrorsWaning(w, errors.New("hubo un error al re asignar la inscripcion, por favor intente nuevamente o comuniquese con el administrador"))
 		return map[string]interface{}{}
 	}
 
 	return inscripciones.Data[0]
 }
 
-func reAssingInscripcionDetailInsert(w http.ResponseWriter, r *http.Request, data []map[string]interface{}) map[string]interface{} {
+func reAssingInscripcionDetailInsert(w http.ResponseWriter, data []map[string]interface{}) map[string]interface{} {
 	schema, table := tables.Detalleinscripciones_GetSchema()
 	inscripciones_detail := orm.SqlExec{}
-	err := inscripciones_detail.New(data, table).Update(schema)
-	if err != nil {
+
+	if err := inscripciones_detail.New(data, table).Update(schema); err != nil {
 		controller.ErrorsWaning(w, err)
 		return map[string]interface{}{}
 	}
 
-	err = inscripciones_detail.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err := inscripciones_detail.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al re asignar el detalle de la inscripcion, por favor intente nuevamente o comuniquese con el administrador"))
 		return map[string]interface{}{}
 	}
 

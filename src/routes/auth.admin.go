@@ -49,6 +49,8 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 	req_body, err := controller.CheckBody(w, r)
 	if err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("error al leer el cuerpo de la solicitud"))
 		return
 	}
 
@@ -101,7 +103,7 @@ func generateJWTToken(idUser string, email string, username string, nombres stri
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(key))
 	if err != nil {
-		return "", err
+		return "", errors.New("error al generar token")
 	}
 
 	return tokenString, nil
@@ -115,6 +117,8 @@ func updateUserAdmin(w http.ResponseWriter, r *http.Request) {
 
 	data_request, err := controller.CheckBody(w, r)
 	if err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("error al leer el cuerpo de la solicitud"))
 		return
 	}
 	data_request["where"] = map[string]interface{}{"id_user_admin": id_user}
@@ -124,15 +128,15 @@ func updateUserAdmin(w http.ResponseWriter, r *http.Request) {
 
 	schema, table := tables.UsersAdmin_GetSchema()
 	propietarios := orm.SqlExec{}
-	err = propietarios.New(data_update, table).Update(schema)
-	if err != nil {
+
+	if err := propietarios.New(data_update, table).Update(schema); err != nil {
 		controller.ErrorsWaning(w, err)
 		return
 	}
 
-	err = propietarios.Exec()
-	if err != nil {
-		controller.ErrorsWaning(w, err)
+	if err := propietarios.Exec(); err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("hubo un error al actualizar el usuario, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 
@@ -147,6 +151,8 @@ func changePassUser(w http.ResponseWriter, r *http.Request) {
 
 	data_request, err := controller.CheckBody(w, r)
 	if err != nil {
+		log.Println(err)
+		controller.ErrorsWaning(w, errors.New("error al leer el cuerpo de la solicitud"))
 		return
 	}
 
@@ -189,9 +195,9 @@ func changePassUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	errUpd = users.Exec()
-	if errUpd != nil {
-		controller.ErrorsWaning(w, errUpd)
+	if errUpd := users.Exec(); errUpd != nil {
+		log.Println(errUpd)
+		controller.ErrorsWaning(w, errors.New("hubo un error al actualizar la contraseña, por favor intente nuevamente o comuniquese con el administrador"))
 		return
 	}
 	response.Data = users.Data[0]
