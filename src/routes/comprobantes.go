@@ -84,7 +84,7 @@ func getComprobanteAdmin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_data_comprobantes := orm.NewQuerys("comprobante_pago").Select().Where("numero_documento", "=", _data_inscripcion["numero_documento"]).Exec(orm.Config_Query{Cloud: true}).All()
+	_data_comprobantes := orm.NewQuerys("comprobante_pago").Select().Where("numero_documento", " ilike", _data_inscripcion["numero_documento"]).Exec(orm.Config_Query{Cloud: true}).All()
 
 	_data_propietario := orm.NewQuerys("propietarios").Select("nombre_propietario").Where("numero_documento", "=", _data_inscripcion["numero_documento"]).Exec(orm.Config_Query{Cloud: true}).One()
 

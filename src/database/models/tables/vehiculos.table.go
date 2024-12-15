@@ -71,7 +71,7 @@ func Vehiculos_GetSchema() ([]models.Base, string) {
 		Required:    true,
 		Type:        "string",
 		Strings: models.Strings{
-			Min:       17,
+			Min:       12,
 			UpperCase: true,
 		},
 	})
