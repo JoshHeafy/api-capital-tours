@@ -49,7 +49,7 @@ func getLastInscripciones(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := controller.NewResponseManager()
 
-	_data_inscripciones := orm.NewQuerys("inscripciones").Select().OrderBy("TO_DATE(fecha_inicio, 'DD/MM/YYYY') DESC").Exec(orm.Config_Query{Cloud: true}).All()
+	_data_inscripciones := orm.NewQuerys("inscripciones").Select().OrderBy("TO_DATE(fecha_inicio, 'YYYY-MM-DD') DESC").Exec(orm.Config_Query{Cloud: true}).All()
 
 	if len(_data_inscripciones) <= 0 {
 		controller.ErrorsWaning(w, errors.New("no se encontro suscripciónes"))
